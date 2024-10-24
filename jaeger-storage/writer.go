@@ -10,28 +10,15 @@ import (
 	"time"
 )
 
-type WriterDBClient struct {
+type WriterDbClient struct {
 	db *sqlx.DB
 }
 
-type WriterOpt struct {
-	Username string
-	Password string
-	DbName   string
+func NewWriterDBClient(db *sqlx.DB) *WriterDbClient {
+	return &WriterDbClient{db: db}
 }
 
-func NewWriterDBClient(db *sqlx.DB) *WriterDBClient {
-	return &WriterDBClient{db: db}
-}
-
-type service struct {
-	Id        int64      `db:"id"`
-	Name      string     `db:"name"`
-	CreatedAt time.Time  `db:"created_at"`
-	DeletedAt *time.Time `db:"deleted_at"`
-}
-
-func (c WriterDBClient) upsertService(ctx context.Context, p service) (int64, error) {
+func (c WriterDbClient) upsertService(ctx context.Context, p InternalService) (int64, error) {
 	//goland:noinspection ALL
 	query := "WITH new_services AS (INSERT INTO services(name, created_at) VALUES (:name, :created_at) ON CONFLICT (name) DO NOTHING RETURNING id) SELECT COALESCE((SELECT id FROM new_services),(SELECT id FROM services WHERE name = :name AND deleted_at IS NULL )) as id"
 
@@ -50,10 +37,14 @@ func (c WriterDBClient) upsertService(ctx context.Context, p service) (int64, er
 		}
 	}
 
+	if rows.Err() != nil {
+		return 0, rows.Err()
+	}
+
 	return res.Id, nil
 }
 
-func (c WriterDBClient) insertOperation(ctx context.Context, p InternalOperation) (int64, error) {
+func (c WriterDbClient) insertOperation(ctx context.Context, p InternalOperation) (int64, error) {
 	//goland:noinspection ALL
 	query := "WITH new_operation AS (INSERT INTO operations(name, service_id, kind, created_at) values (:name, :service_id, :kind, :created_at) ON CONFLICT(name, kind, service_id) DO NOTHING RETURNING id) SELECT COALESCE((SELECT id FROM new_operation), (SELECT id from operations WHERE name = :name AND kind = :kind AND service_id = :service_id AND deleted_at IS NULL)) as id"
 
@@ -72,30 +63,45 @@ func (c WriterDBClient) insertOperation(ctx context.Context, p InternalOperation
 		}
 	}
 
+	if rows.Err() != nil {
+		return 0, rows.Err()
+	}
+
 	return res.Id, nil
 }
 
-func (c WriterDBClient) insertSpan(ctx context.Context, p InternalSpan) (int64, error) {
+func (c WriterDbClient) insertSpan(ctx context.Context, p InternalSpan) (int64, error) {
 	//goland:noinspection ALL
-	query := "INSERT INTO spans(span_id, trace_id, operation_id, flags, start_time, duration, tags, service_id, process_id, process_tags, warnings, logs, kind, refs) VALUES (:span_id, :trace_id, :operation_id, :flags, :start_time, :duration, :tags, :service_id, :process_id, :process_tags, :warnings, :logs, :kind, :refs) RETURNING *"
+	query := "INSERT INTO spans(span_id, trace_id, operation_id, flags, start_time, duration, tags, service_id, process_id, process_tags, warnings, logs, kind, refs) VALUES (:span_id, :trace_id, :operation_id, :flags, :start_time, :duration, :tags, :service_id, :process_id, :process_tags, :warnings, :logs, :kind, :refs) RETURNING id"
 
-	result, err := c.db.NamedExecContext(ctx, query, p)
+	rows, err := c.db.NamedQueryContext(ctx, query, p)
 	if err != nil {
 		return 0, err
 	}
-	return result.LastInsertId()
+	var spanId int64
+	for rows.Next() {
+		if err := rows.Scan(&spanId); err != nil {
+			return 0, err
+		}
+	}
+
+	if rows.Err() != nil {
+		return 0, rows.Err()
+	}
+
+	return spanId, nil
 }
 
-func (c WriterDBClient) WriteSpan(ctx context.Context, span *model.Span) error {
+func (c WriterDbClient) WriteSpan(ctx context.Context, span *model.Span) error {
 	log.Println(fmt.Sprintf("[writespan] received a request to write a span, spanId: %s, serviceName: %s, operationName: %s", span.SpanID.String(), span.Process.GetServiceName(), span.GetOperationName()))
 
-	//	upsert service
-	serviceId, err := c.upsertService(ctx, service{
+	//	upsert InternalService
+	serviceId, err := c.upsertService(ctx, InternalService{
 		Name:      span.Process.GetServiceName(),
 		CreatedAt: time.Now(),
 	})
 	if err != nil {
-		log.Println("[writespan][error] cannot upsert service", err)
+		log.Println("[writespan][error] cannot upsert InternalService", err)
 	}
 	spanKind, _ := span.GetSpanKind()
 	//	upsert operation
