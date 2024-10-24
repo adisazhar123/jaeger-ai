@@ -5,8 +5,8 @@ CREATE TYPE SPANKIND AS ENUM ('server', 'client', 'unspecified', 'producer', 'co
 
 CREATE TABLE services
 (
-    id   BIGSERIAL PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE,
+    id         BIGSERIAL PRIMARY KEY,
+    name       TEXT        NOT NULL UNIQUE,
     created_at TIMESTAMPTZ NOT NULL,
     deleted_at TIMESTAMPTZ
 );
@@ -17,7 +17,7 @@ CREATE TABLE operations
     name       TEXT                            NOT NULL,
     service_id BIGINT REFERENCES services (id) NOT NULL,
     kind       SPANKIND                        NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ                     NOT NULL,
     deleted_at TIMESTAMPTZ,
 
     UNIQUE (name, kind, service_id)
@@ -25,9 +25,9 @@ CREATE TABLE operations
 
 CREATE TABLE spans
 (
-    id      BIGSERIAL PRIMARY KEY,
-    span_id      TEXT                             NOT NULL,
-    trace_id     TEXT                             NOT NULL,
+    id           BIGSERIAL PRIMARY KEY,
+    span_id      TEXT                              NOT NULL,
+    trace_id     TEXT                              NOT NULL,
     operation_id BIGINT REFERENCES operations (id) NOT NULL,
     flags        BIGINT                            NOT NULL,
     start_time   TIMESTAMP                         NOT NULL,
@@ -40,6 +40,6 @@ CREATE TABLE spans
     logs         JSONB,
     kind         SPANKIND                          NOT NULL,
     refs         JSONB                             NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL,
-    deleted_at TIMESTAMPTZ
+    created_at   TIMESTAMPTZ                       NOT NULL,
+    deleted_at   TIMESTAMPTZ
 );
