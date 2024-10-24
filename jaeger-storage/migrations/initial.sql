@@ -1,9 +1,14 @@
+-- adapted from https://github.com/robbert229/jaeger-postgresql/blob/main/internal/sql/migrations/001_initial.sql
+-- with minor adjustments towards the column type and additional created_at & deleted_at columns
+
 CREATE TYPE SPANKIND AS ENUM ('server', 'client', 'unspecified', 'producer', 'consumer', 'ephemeral', 'internal');
 
 CREATE TABLE services
 (
     id   BIGSERIAL PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE
+    name TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMPTZ NOT NULL,
+    deleted_at TIMESTAMPTZ
 );
 
 CREATE TABLE operations
@@ -12,6 +17,8 @@ CREATE TABLE operations
     name       TEXT                            NOT NULL,
     service_id BIGINT REFERENCES services (id) NOT NULL,
     kind       SPANKIND                        NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    deleted_at TIMESTAMPTZ,
 
     UNIQUE (name, kind, service_id)
 );
@@ -32,11 +39,7 @@ CREATE TABLE spans
     warnings     TEXT[],
     logs         JSONB,
     kind         SPANKIND                          NOT NULL,
-    refs         JSONB                             NOT NULL
+    refs         JSONB                             NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    deleted_at TIMESTAMPTZ
 );
-
-DROP TABLE spans;
-DROP TABLE operations;
-DROP TABLE services;
-
-DROP TYPE SPANKIND;
