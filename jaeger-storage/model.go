@@ -1,37 +1,10 @@
 package main
 
-import (
-	"fmt"
-	"github.com/jaegertracing/jaeger/model"
-	"log"
-	"time"
-)
+import "time"
 
 type InternalKeyValue struct {
-	Key       string          `json:"key,omitempty"`
-	Value     any             `json:"value,omitempty"`
-	ValueType model.ValueType `json:"value_type"`
-}
-
-func (kv InternalKeyValue) ToKeyValue() model.KeyValue {
-	newKv := model.KeyValue{}
-	newKv.Key = kv.Key
-	newKv.VType = kv.ValueType
-	if kv.ValueType == model.StringType {
-		newKv.VStr = kv.Value.(string)
-	} else if kv.ValueType == model.ValueType_BOOL {
-		newKv.VBool = kv.Value.(bool)
-	} else if kv.ValueType == model.ValueType_INT64 {
-		newKv.VInt64 = kv.Value.(int64)
-	} else if kv.ValueType == model.ValueType_FLOAT64 {
-		newKv.VFloat64 = kv.Value.(float64)
-	} else if kv.ValueType == model.ValueType_BINARY {
-		newKv.VBinary = kv.Value.([]byte)
-	} else {
-		log.Println(fmt.Sprintf("[decodeKeyValue] unknown type %s", kv.ValueType))
-	}
-
-	return newKv
+	Key   string `json:"key,omitempty"`
+	Value any    `json:"value,omitempty"`
 }
 
 type InternalLog struct {
@@ -43,6 +16,11 @@ type InternalSpanRef struct {
 	TraceId string `json:"trace_id"`
 	SpanId  string `json:"span_id"`
 	RefType int64  `json:"ref_type"`
+}
+
+type InternalTag struct {
+	Key   string `json:"key"`
+	Value any    `json:"value"`
 }
 
 type InternalSpan struct {
@@ -69,13 +47,6 @@ type InternalOperation struct {
 	Name      string     `db:"name"`
 	ServiceId int64      `db:"service_id"`
 	Kind      string     `db:"kind"`
-	CreatedAt time.Time  `db:"created_at"`
-	DeletedAt *time.Time `db:"deleted_at"`
-}
-
-type InternalService struct {
-	Id        int64      `db:"id"`
-	Name      string     `db:"name"`
 	CreatedAt time.Time  `db:"created_at"`
 	DeletedAt *time.Time `db:"deleted_at"`
 }
