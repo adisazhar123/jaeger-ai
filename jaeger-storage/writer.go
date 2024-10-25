@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/jaegertracing/jaeger/model"
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 	_ "github.com/lib/pq"
 	"log"
 	"time"
@@ -18,7 +19,7 @@ func NewWriterDBClient(db *sqlx.DB) *WriterDbClient {
 	return &WriterDbClient{db: db}
 }
 
-func (c WriterDbClient) upsertService(ctx context.Context, p InternalService) (int64, error) {
+func (c *WriterDbClient) upsertService(ctx context.Context, p InternalService) (int64, error) {
 	//goland:noinspection ALL
 	query := "WITH new_services AS (INSERT INTO services(name, created_at) VALUES (:name, :created_at) ON CONFLICT (name) DO NOTHING RETURNING id) SELECT COALESCE((SELECT id FROM new_services),(SELECT id FROM services WHERE name = :name AND deleted_at IS NULL )) as id"
 
@@ -44,7 +45,7 @@ func (c WriterDbClient) upsertService(ctx context.Context, p InternalService) (i
 	return res.Id, nil
 }
 
-func (c WriterDbClient) insertOperation(ctx context.Context, p InternalOperation) (int64, error) {
+func (c *WriterDbClient) insertOperation(ctx context.Context, p InternalOperation) (int64, error) {
 	//goland:noinspection ALL
 	query := "WITH new_operation AS (INSERT INTO operations(name, service_id, kind, created_at) values (:name, :service_id, :kind, :created_at) ON CONFLICT(name, kind, service_id) DO NOTHING RETURNING id) SELECT COALESCE((SELECT id FROM new_operation), (SELECT id from operations WHERE name = :name AND kind = :kind AND service_id = :service_id AND deleted_at IS NULL)) as id"
 
@@ -70,9 +71,9 @@ func (c WriterDbClient) insertOperation(ctx context.Context, p InternalOperation
 	return res.Id, nil
 }
 
-func (c WriterDbClient) insertSpan(ctx context.Context, p InternalSpan) (int64, error) {
+func (c *WriterDbClient) insertSpan(ctx context.Context, p InternalSpan) (int64, error) {
 	//goland:noinspection ALL
-	query := "INSERT INTO spans(span_id, trace_id, operation_id, flags, start_time, duration, tags, service_id, process_id, process_tags, warnings, logs, kind, refs) VALUES (:span_id, :trace_id, :operation_id, :flags, :start_time, :duration, :tags, :service_id, :process_id, :process_tags, :warnings, :logs, :kind, :refs) RETURNING id"
+	query := "INSERT INTO spans(span_id, trace_id, operation_id, flags, start_time, duration, tags, service_id, process_id, process_tags, warnings, logs, kind, refs, created_at) VALUES (:span_id, :trace_id, :operation_id, :flags, :start_time, :duration, :tags, :service_id, :process_id, :process_tags, :warnings_pq_array, :logs, :kind, :refs, :created_at) RETURNING id"
 
 	rows, err := c.db.NamedQueryContext(ctx, query, p)
 	if err != nil {
@@ -92,7 +93,7 @@ func (c WriterDbClient) insertSpan(ctx context.Context, p InternalSpan) (int64, 
 	return spanId, nil
 }
 
-func (c WriterDbClient) WriteSpan(ctx context.Context, span *model.Span) error {
+func (c *WriterDbClient) WriteSpan(ctx context.Context, span *model.Span) error {
 	log.Println(fmt.Sprintf("[writespan] received a request to write a span, spanId: %s, serviceName: %s, operationName: %s", span.SpanID.String(), span.Process.GetServiceName(), span.GetOperationName()))
 
 	//	upsert InternalService
@@ -148,6 +149,7 @@ func (c WriterDbClient) WriteSpan(ctx context.Context, span *model.Span) error {
 		ProcessId:   span.ProcessID,
 		ProcessTags: processTags,
 		Warnings:    span.Warnings,
+		WarningsPq:  pq.Array(span.Warnings),
 		Logs:        logs,
 		Kind:        spanKind.String(),
 		Refs:        references,
@@ -156,10 +158,10 @@ func (c WriterDbClient) WriteSpan(ctx context.Context, span *model.Span) error {
 	spanId, err := c.insertSpan(ctx, spanData)
 	if err != nil {
 		log.Println("[writespan][error] an error occurred while inserting span", err)
-		log.Println("span data", spanData)
+		log.Println(fmt.Sprintf("span data %+v", spanData))
 		return err
 	}
-	log.Println(fmt.Sprintf("[writespan] successfully inserted span with id %d", spanId))
+	log.Println(fmt.Sprintf("[writespan] successfully inserted span with primary key: %d, spanId: %s, serviceName: %s, operationName: %s", spanId, span.SpanID.String(), span.Process.GetServiceName(), span.GetOperationName()))
 
 	return nil
 }

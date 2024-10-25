@@ -13,7 +13,12 @@ type ReaderDbClient struct {
 	db *sqlx.DB
 }
 
-func (r ReaderDbClient) GetTrace(ctx context.Context, traceID model.TraceID) (*model.Trace, error) {
+func NewReaderDBClient(db *sqlx.DB) *ReaderDbClient {
+	return &ReaderDbClient{db: db}
+}
+
+func (r *ReaderDbClient) GetTrace(ctx context.Context, traceID model.TraceID) (*model.Trace, error) {
+	//goland:noinspection ALL
 	query := "SELECT spans.*, operations.name as \"operation.name\", operations.service_id as \"operation.service_id\", operations.kind as \"operation.kind\", services.id as \"services.id\", services.name as \"service.name\" FROM spans INNER JOIN operations on operations.id = spans.operation_id INNER JOIN services on services.id = operations.service_id WHERE trace_id = :trace_id AND spans.deleted_at IS NULL"
 
 	rows, err := r.db.NamedQueryContext(ctx, query, struct {
@@ -69,7 +74,8 @@ func (r ReaderDbClient) GetTrace(ctx context.Context, traceID model.TraceID) (*m
 	}, nil
 }
 
-func (r ReaderDbClient) GetServices(ctx context.Context) ([]string, error) {
+func (r *ReaderDbClient) GetServices(ctx context.Context) ([]string, error) {
+	//goland:noinspection ALL
 	query := "SELECT name FROM services WHERE deleted_at IS NULL"
 	rows, err := r.db.NamedQueryContext(ctx, query, struct{}{})
 	if err != nil {
@@ -94,7 +100,8 @@ func (r ReaderDbClient) GetServices(ctx context.Context) ([]string, error) {
 	return services, nil
 }
 
-func (r ReaderDbClient) GetOperations(ctx context.Context, query spanstore.OperationQueryParameters) ([]spanstore.Operation, error) {
+func (r *ReaderDbClient) GetOperations(ctx context.Context, query spanstore.OperationQueryParameters) ([]spanstore.Operation, error) {
+	//goland:noinspection ALL
 	selectQuery := "SELECT o.name, o.kind FROM operations o INNER JOIN services s ON o.service_id = s.id WHERE (o.kind = :kind OR :kind = '') AND s.name = :name AND o.deleted_at IS NULL"
 
 	rows, err := r.db.NamedQueryContext(ctx, selectQuery, struct {
@@ -129,12 +136,14 @@ func (r ReaderDbClient) GetOperations(ctx context.Context, query spanstore.Opera
 	return operations, nil
 }
 
-func (r ReaderDbClient) FindTraces(ctx context.Context, query *spanstore.TraceQueryParameters) ([]*model.Trace, error) {
-	//TODO implement me
-	panic("implement me")
+func (r *ReaderDbClient) FindTraces(ctx context.Context, query *spanstore.TraceQueryParameters) ([]*model.Trace, error) {
+	//TODO: implement
+	log.Println("[FindTraces] received a request")
+	return []*model.Trace{}, nil
 }
 
-func (r ReaderDbClient) FindTraceIDs(ctx context.Context, query *spanstore.TraceQueryParameters) ([]model.TraceID, error) {
-	//TODO implement me
-	panic("implement me")
+func (r *ReaderDbClient) FindTraceIDs(ctx context.Context, query *spanstore.TraceQueryParameters) ([]model.TraceID, error) {
+	//TODO: implement
+	log.Println("[FindTraceIDs] received a request")
+	return []model.TraceID{}, nil
 }
