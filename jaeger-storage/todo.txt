@@ -1,3 +1,4 @@
 1. insert to `traces` table and summarize
 2. summarize the spans
 3. create knowledge graph
+4. [optional maybe] implement dependencystore/interface
