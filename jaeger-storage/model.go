@@ -1,6 +1,8 @@
 package main
 
 import (
+	"database/sql"
+	"database/sql/driver"
 	"fmt"
 	"github.com/jaegertracing/jaeger/model"
 	"log"
@@ -60,11 +62,15 @@ type InternalSpan struct {
 	ProcessId   string             `db:"process_id"`
 	ProcessTags []byte             `db:"process_tags"`
 	Warnings    []string           `db:"warnings"`
-	Logs        []byte             `db:"logs"`
-	Kind        string             `db:"kind"`
-	Refs        []byte             `db:"refs"`
-	CreatedAt   time.Time          `db:"created_at"`
-	DeletedAt   *time.Time         `db:"deleted_at"`
+	WarningsPq  interface {
+		driver.Valuer
+		sql.Scanner
+	} `db:"warnings_pq_array"`
+	Logs      []byte     `db:"logs"`
+	Kind      string     `db:"kind"`
+	Refs      []byte     `db:"refs"`
+	CreatedAt time.Time  `db:"created_at"`
+	DeletedAt *time.Time `db:"deleted_at"`
 }
 
 func (s InternalSpan) ToSpan() (*model.Span, error) {
