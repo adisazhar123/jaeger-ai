@@ -33,16 +33,16 @@ func encodeLogs(logs []model.Log) ([]byte, error) {
 	internalLogs := make([]InternalLog, len(logs))
 
 	for i := 0; i < len(logs); i++ {
-		log := logs[i]
-		fields := make([]InternalKeyValue, len(log.Fields))
-		for j := 0; j < len(log.Fields); j++ {
-			field := log.Fields[j]
+		l := logs[i]
+		fields := make([]InternalKeyValue, len(l.Fields))
+		for j := 0; j < len(l.Fields); j++ {
+			field := l.Fields[j]
 			newKv := encodeKeyValue(field)
-			fields[i] = *newKv
+			fields[j] = *newKv
 		}
 
 		internalLog := InternalLog{
-			Timestamp: log.GetTimestamp(),
+			Timestamp: l.GetTimestamp(),
 			Fields:    fields,
 		}
 		internalLogs[i] = internalLog
