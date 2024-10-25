@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"github.com/jaegertracing/jaeger/model"
 	"github.com/jaegertracing/jaeger/storage/spanstore"
 	"github.com/jmoiron/sqlx"
+	"log"
 )
 
 type ReaderDbClient struct {
@@ -12,26 +14,80 @@ type ReaderDbClient struct {
 }
 
 func (r ReaderDbClient) GetTrace(ctx context.Context, traceID model.TraceID) (*model.Trace, error) {
-	//TODO implement me
-	panic("implement me")
+	query := "SELECT spans.*, operations.name as \"operation.name\", operations.service_id as \"operation.service_id\", operations.kind as \"operation.kind\", services.id as \"services.id\", services.name as \"service.name\" FROM spans INNER JOIN operations on operations.id = spans.operation_id INNER JOIN services on services.id = operations.service_id WHERE trace_id = :trace_id AND spans.deleted_at IS NULL"
+
+	rows, err := r.db.NamedQueryContext(ctx, query, struct {
+		TraceId string `db:"trace_id"`
+	}{
+		TraceId: traceID.String(),
+	})
+
+	if err == sql.ErrNoRows {
+		return nil, spanstore.ErrTraceNotFound
+	}
+
+	if err != nil {
+		log.Println("[GetTrace][error] an error occurred while getting trace", err)
+		return nil, err
+	}
+
+	spans := make([]*model.Span, 0)
+	traceProcessingMap := make([]model.Trace_ProcessMapping, 0)
+	warnings := make([]string, 0)
+
+	for rows.Next() {
+		var internalSpan InternalSpan
+		if err := rows.StructScan(&internalSpan); err != nil {
+			log.Println("[GetTrace][error] an error occurred while calling structScan()", err)
+			return nil, err
+		}
+		span, err := internalSpan.ToSpan()
+		if err != nil {
+			log.Println("[GetTrace][error] an error occurred while calling ToSpan()", err)
+			return nil, err
+		}
+
+		tpm := model.Trace_ProcessMapping{
+			ProcessID: span.ProcessID,
+			Process:   *span.Process,
+		}
+
+		spans = append(spans, span)
+		traceProcessingMap = append(traceProcessingMap, tpm)
+		warnings = append(warnings, span.Warnings...)
+	}
+
+	if rows.Err() != nil {
+		log.Println("[GetTrace][error] an error in sqlx rows", err)
+		return nil, err
+	}
+
+	return &model.Trace{
+		Spans:      spans,
+		ProcessMap: traceProcessingMap,
+		Warnings:   warnings,
+	}, nil
 }
 
 func (r ReaderDbClient) GetServices(ctx context.Context) ([]string, error) {
 	query := "SELECT name FROM services WHERE deleted_at IS NULL"
 	rows, err := r.db.NamedQueryContext(ctx, query, struct{}{})
 	if err != nil {
+		log.Println("[GetServices][error] an error occurred fetching services", err)
 		return nil, err
 	}
 	services := make([]string, 0)
 	for rows.Next() {
 		var name string
 		if err := rows.Scan(&name); err != nil {
+			log.Println("[GetServices][error] an error occurred calling scan()", err)
 			return nil, err
 		}
 		services = append(services, name)
 	}
 
 	if rows.Err() != nil {
+		log.Println("[GetServices][error] an error occurred in rows", err)
 		return nil, rows.Err()
 	}
 
