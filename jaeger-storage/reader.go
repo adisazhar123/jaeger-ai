@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/jaegertracing/jaeger/model"
 	"github.com/jaegertracing/jaeger/storage/spanstore"
 	"github.com/jmoiron/sqlx"
@@ -102,7 +103,7 @@ func (r *ReaderDbClient) GetServices(ctx context.Context) ([]string, error) {
 
 func (r *ReaderDbClient) GetOperations(ctx context.Context, query spanstore.OperationQueryParameters) ([]spanstore.Operation, error) {
 	//goland:noinspection ALL
-	selectQuery := "SELECT o.name, o.kind FROM operations o INNER JOIN services s ON o.service_id = s.id WHERE (o.kind = :kind OR :kind = '') AND s.name = :name AND o.deleted_at IS NULL"
+	selectQuery := "SELECT o.name, o.kind FROM operations o INNER JOIN services s ON o.service_id = s.id WHERE s.name = :name AND o.deleted_at IS NULL"
 
 	rows, err := r.db.NamedQueryContext(ctx, selectQuery, struct {
 		Kind string `db:"kind"`
@@ -113,6 +114,7 @@ func (r *ReaderDbClient) GetOperations(ctx context.Context, query spanstore.Oper
 	})
 
 	if err != nil {
+		log.Println("[GetOperations][error] an error occurred", err)
 		return nil, err
 	}
 
@@ -125,10 +127,13 @@ func (r *ReaderDbClient) GetOperations(ctx context.Context, query spanstore.Oper
 		if err := rows.StructScan(&s); err != nil {
 			return nil, err
 		}
-		operations = append(operations, spanstore.Operation{
-			Name:     s.Name,
-			SpanKind: s.Kind,
-		})
+
+		if query.SpanKind == "" || query.SpanKind == s.Kind {
+			operations = append(operations, spanstore.Operation{
+				Name:     s.Name,
+				SpanKind: s.Kind,
+			})
+		}
 	}
 	if rows.Err() != nil {
 		return nil, rows.Err()
@@ -138,12 +143,13 @@ func (r *ReaderDbClient) GetOperations(ctx context.Context, query spanstore.Oper
 
 func (r *ReaderDbClient) FindTraces(ctx context.Context, query *spanstore.TraceQueryParameters) ([]*model.Trace, error) {
 	//TODO: implement
-	log.Println("[FindTraces] received a request")
+	log.Println(fmt.Sprintf("[FindTraces] received a request, query: %+v", query))
+	log.Println("[duration]", query.DurationMin, query.DurationMax)
 	return []*model.Trace{}, nil
 }
 
 func (r *ReaderDbClient) FindTraceIDs(ctx context.Context, query *spanstore.TraceQueryParameters) ([]model.TraceID, error) {
 	//TODO: implement
-	log.Println("[FindTraceIDs] received a request")
+	log.Println(fmt.Sprintf("[FindTraceIDs] received a request, query: %+v", query))
 	return []model.TraceID{}, nil
 }

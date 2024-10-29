@@ -44,7 +44,7 @@ type InternalLog struct {
 type InternalSpanRef struct {
 	TraceId string `json:"trace_id"`
 	SpanId  string `json:"span_id"`
-	RefType int64  `json:"ref_type"`
+	RefType uint64 `json:"ref_type"`
 }
 
 type InternalSpan struct {
@@ -53,7 +53,7 @@ type InternalSpan struct {
 	TraceId     string             `db:"trace_id"`
 	OperationId int64              `db:"operation_id"`
 	Operation   *InternalOperation `db:"operation"`
-	Flags       int64              `db:"flags"`
+	Flags       uint64             `db:"flags"`
 	StartTime   time.Time          `db:"start_time"`
 	Duration    time.Duration      `db:"duration"`
 	Tags        []byte             `db:"tags"`
