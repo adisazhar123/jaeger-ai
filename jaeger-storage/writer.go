@@ -52,7 +52,7 @@ func (c *WriterDbClient) insertSpan(ctx context.Context, p InternalSpan) (int64,
 	//goland:noinspection ALL
 	query := "INSERT INTO spans(span_id, trace_id, operation_id, flags, start_time, duration, tags, service_id, process_id, process_tags, warnings, logs, kind, refs, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id"
 	var id int64
-	err := c.db.GetContext(ctx, &id, query, p.SpanId, p.TraceId, p.OperationId, p.Flags, p.StartTime, p.Duration, p.Tags, p.ServiceId, p.ProcessId, p.ProcessTags, p.WarningsPq, p.Logs, p.Kind, p.Refs, p.CreatedAt)
+	err := c.db.GetContext(ctx, &id, query, p.SpanId, p.TraceId, p.OperationId, p.Flags, p.StartTime, p.Duration.Seconds(), p.Tags, p.ServiceId, p.ProcessId, p.ProcessTags, p.WarningsPq, p.Logs, p.Kind, p.Refs, p.CreatedAt)
 
 	return id, err
 }

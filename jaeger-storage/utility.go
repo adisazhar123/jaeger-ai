@@ -84,7 +84,7 @@ func encodeReferences(references []model.SpanRef) ([]byte, error) {
 		internalRef := InternalSpanRef{
 			TraceId: ref.TraceID.String(),
 			SpanId:  ref.SpanID.String(),
-			RefType: uint64(ref.SpanID),
+			RefType: uint64(ref.RefType),
 		}
 		internalReferences[i] = internalRef
 	}
