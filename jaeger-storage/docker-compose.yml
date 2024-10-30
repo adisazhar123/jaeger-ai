@@ -1,0 +1,12 @@
+version: '3'
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: jaeger-storage
+    ports:
+      - '5431:5432'

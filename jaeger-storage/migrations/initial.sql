@@ -4,10 +4,13 @@
 BEGIN
 TRANSACTION;
 
+DROP TABLE IF EXISTS traces, operations, services, spans;
+DROP TYPE IF EXISTS SPANKIND;
+
 CREATE TYPE SPANKIND AS ENUM ('server', 'client', 'unspecified', 'producer', 'consumer', 'ephemeral', 'internal');
 
 
-CREATE TABLE traces
+CREATE TABLE IF NOT EXISTS traces
 (
     id         BIGSERIAL PRIMARY KEY,
     trace_id   TEXT        NOT NULL,
@@ -17,27 +20,27 @@ CREATE TABLE traces
 );
 
 
-CREATE TABLE services
+CREATE TABLE IF NOT EXISTS services
 (
-    id   BIGSERIAL PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE,
+    id         BIGSERIAL PRIMARY KEY,
+    name       TEXT        NOT NULL UNIQUE,
     created_at TIMESTAMPTZ NOT NULL,
     deleted_at TIMESTAMPTZ
 );
 
-CREATE TABLE operations
+CREATE TABLE IF NOT EXISTS operations
 (
     id         BIGSERIAL PRIMARY KEY,
     name       TEXT                            NOT NULL,
     service_id BIGINT REFERENCES services (id) NOT NULL,
     kind       SPANKIND                        NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ                     NOT NULL,
     deleted_at TIMESTAMPTZ,
 
     UNIQUE (name, kind, service_id)
-);
+    );
 
-CREATE TABLE spans
+CREATE TABLE IF NOT EXISTS spans
 (
     id           BIGSERIAL PRIMARY KEY,
     span_id      TEXT                              NOT NULL,
@@ -58,7 +61,7 @@ CREATE TABLE spans
     summary      TEXT,
     created_at   TIMESTAMPTZ                       NOT NULL,
     deleted_at   TIMESTAMPTZ
-);
+    );
 
 END
 TRANSACTION;
