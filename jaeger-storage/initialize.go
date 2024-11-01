@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
+	"log"
 )
 
 type NewDbOpt struct {
@@ -19,4 +22,26 @@ func NewDb(opt NewDbOpt) (*sqlx.DB, error) {
 	}
 
 	return db, err
+}
+
+func NewNeo4jDriver() (*neo4j.DriverWithContext, error) {
+	ctx := context.Background()
+	dbUri := "bolt://localhost:7687"
+	dbUser := ""
+	dbPassword := ""
+	driver, err := neo4j.NewDriverWithContext(
+		dbUri,
+		neo4j.BasicAuth(dbUser, dbPassword, ""))
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	err = driver.VerifyConnectivity(ctx)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return &driver, nil
 }

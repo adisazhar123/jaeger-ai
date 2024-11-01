@@ -77,7 +77,7 @@ func decodeLogs(data []byte) ([]model.Log, error) {
 	return decodedLogs, nil
 }
 
-func encodeReferences(references []model.SpanRef) ([]byte, error) {
+func encodeReferences(references []model.SpanRef) ([]byte, []InternalSpanRef, error) {
 	internalReferences := make([]InternalSpanRef, len(references))
 	for i := 0; i < len(references); i++ {
 		ref := references[i]
@@ -89,7 +89,8 @@ func encodeReferences(references []model.SpanRef) ([]byte, error) {
 		internalReferences[i] = internalRef
 	}
 
-	return json.Marshal(internalReferences)
+	result, err := json.Marshal(internalReferences)
+	return result, internalReferences, err
 }
 
 func decodeReferences(data []byte) ([]model.SpanRef, error) {

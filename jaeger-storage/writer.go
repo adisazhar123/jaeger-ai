@@ -7,16 +7,34 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 	_ "github.com/lib/pq"
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"log"
+	"os"
+	"sync"
 	"time"
 )
 
-type WriterDbClient struct {
-	db *sqlx.DB
+type relationshipSpan struct {
+	relationship string
+	childSpanId  string
 }
 
-func NewWriterDBClient(db *sqlx.DB) *WriterDbClient {
-	return &WriterDbClient{db: db}
+type WriterDbClient struct {
+	db             *sqlx.DB
+	driver         *neo4j.DriverWithContext
+	enableNeo4j    bool
+	missingParents map[string][]relationshipSpan
+	mutex          sync.Mutex
+}
+
+func NewWriterDBClient(db *sqlx.DB, driver *neo4j.DriverWithContext, enableNeo4j bool) *WriterDbClient {
+	return &WriterDbClient{
+		db:             db,
+		driver:         driver,
+		enableNeo4j:    enableNeo4j,
+		missingParents: make(map[string][]relationshipSpan),
+		mutex:          sync.Mutex{},
+	}
 }
 
 func (c *WriterDbClient) upsertService(ctx context.Context, p InternalService) (int64, error) {
@@ -58,7 +76,16 @@ func (c *WriterDbClient) insertSpan(ctx context.Context, p InternalSpan) (int64,
 }
 
 func (c *WriterDbClient) WriteSpan(ctx context.Context, span *model.Span) error {
-	log.Println(fmt.Sprintf("[writespan] received a request to write a span, spanId: %s, serviceName: %s, operationName: %s", span.SpanID.String(), span.Process.GetServiceName(), span.GetOperationName()))
+	if span.Process.GetServiceName() == "jaeger-all-in-one" {
+		//log.Println("skipping jaeger-all-in-one")
+		return nil
+	}
+
+	f3, err := os.OpenFile("writer-all.log", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	defer f3.Close()
+	msg := fmt.Sprintf("[writespan] received a request to write a span, spanId: %s, serviceName: %s, operationName: %s\n", span.SpanID.String(), span.Process.GetServiceName(), span.GetOperationName())
+	log.Print(msg)
+	f3.WriteString(msg)
 
 	//	upsert InternalService
 	serviceId, err := c.upsertService(ctx, InternalService{
@@ -95,7 +122,7 @@ func (c *WriterDbClient) WriteSpan(ctx context.Context, span *model.Span) error 
 		return err
 	}
 
-	references, err := encodeReferences(span.References)
+	references, internalRefs, err := encodeReferences(span.References)
 	if err != nil {
 		log.Println("[writespan][error] an error occurred while encoding references", err)
 		return err
@@ -127,6 +154,122 @@ func (c *WriterDbClient) WriteSpan(ctx context.Context, span *model.Span) error 
 		return err
 	}
 	log.Println(fmt.Sprintf("[writespan] successfully inserted span with primary key: %d, spanId: %s, serviceName: %s, operationName: %s", spanId, span.SpanID.String(), span.Process.GetServiceName(), span.GetOperationName()))
+
+	if c.enableNeo4j && span.Process.GetServiceName() != "jaeger-all-in-one" {
+		// neo4j stuff
+		neo4jQuery := `
+	merge (service: Service {name: $service_name})
+	create (span: Span {
+		operation_name: $operation_name,
+		span_id: $span_id,
+		duration: $duration,
+		start_time: $start_time,
+		log_summary: $log_summary,
+		tag_summary: $tag_summary,
+		span_kind: $span_kind,
+		action_kind: $action_kind,
+		action_status_code: $action_status_code
+	})
+	merge (service)-[r_contain:CONTAINS]->(span)
+	return (span)
+`
+		spanNodeResult, err := neo4j.ExecuteQuery(ctx, *c.driver, neo4jQuery, map[string]any{
+			"service_name":   span.Process.GetServiceName(),
+			"operation_name": span.GetOperationName(),
+			"span_id":        span.SpanID.String(),
+			"duration":       span.Duration.Nanoseconds(),
+			"start_time":     span.StartTime,
+			"log_summary":    "TODO: empty-for-now",
+			"tag_summary":    "TODO: empty-for-now",
+			"span_kind":      spanKind.String(),
+			// TODO: lookup from tags/logs
+			"action_kind":        "http",
+			"action_status_code": "TODO: empty for now",
+		}, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+		if err != nil {
+			log.Println("[error][neo4j] cannot create service and span", err)
+			return err
+		}
+
+		log.Println("[spanNodeResult]", spanNodeResult.Summary.Query())
+
+		f, err := os.OpenFile("writer-missing.log", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+		defer f.Close()
+
+		f2, err := os.OpenFile("writer-fix.log", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+		defer f2.Close()
+
+		for i := 0; i < len(internalRefs); i++ {
+			log.Printf("[info] associating span child: %s with span parent: %s", span.SpanID.String(), span.ParentSpanID())
+			r := internalRefs[i]
+			relationShip := "INVOKES_CHILD"
+			if r.RefType == uint64(model.SpanRefType_FOLLOWS_FROM) {
+				relationShip = "INVOKES_FOLLOWS"
+			}
+			q := fmt.Sprintf(`
+				match(span_child: Span { span_id: $span_id_child })
+				match(span_parent: Span { span_id: $span_id_parent })
+				merge (span_parent)-[r_invoke:%s]->(span_child)
+				return span_parent
+			`, relationShip)
+
+			associateChildParentResult, err := neo4j.ExecuteQuery(ctx, *c.driver, q, map[string]any{
+				"span_id_child":  span.SpanID.String(),
+				"span_id_parent": r.SpanId,
+			}, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+			if err != nil {
+				log.Println("[error][neo4j] cannot associate spans", err)
+				return err
+			}
+
+			if len(associateChildParentResult.Records) == 0 {
+				c.mutex.Lock()
+				_, ok := c.missingParents[r.SpanId]
+
+				if !ok {
+					c.missingParents[r.SpanId] = make([]relationshipSpan, 0)
+				}
+
+				c.missingParents[r.SpanId] = append(c.missingParents[r.SpanId], struct {
+					relationship string
+					childSpanId  string
+				}{relationship: relationShip, childSpanId: span.SpanID.String()})
+				c.mutex.Unlock()
+
+				msg := fmt.Sprintf("[missing-parent] span %s cannot find parent span %s\n", span.SpanID.String(), r.SpanId)
+				if _, err = f.WriteString(msg); err != nil {
+					log.Println("cannot write to file", err)
+				}
+			} else {
+				log.Println(fmt.Sprintf("[found-parent] span %s found parent span %s", span.SpanID.String(), r.SpanId))
+			}
+		}
+
+		c.mutex.Lock()
+		missingSpans, _ := c.missingParents[span.SpanID.String()]
+		for i := 0; i < len(missingSpans); i++ {
+			missingSpan := missingSpans[i]
+
+			q := fmt.Sprintf(`
+				match(span_child: Span { span_id: $span_id_child })
+				match(span_parent: Span { span_id: $span_id_parent })
+				merge (span_parent)-[r_invoke:%s]->(span_child)
+				return span_parent
+			`, missingSpan.relationship)
+			_, err := neo4j.ExecuteQuery(ctx, *c.driver, q, map[string]any{
+				"span_id_child":  missingSpan.childSpanId,
+				"span_id_parent": span.SpanID.String(),
+			}, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+
+			if err != nil {
+				log.Println("[error][neo4j] cannot associate missing spans", err)
+				return err
+			}
+			f2.WriteString(fmt.Sprintf("fixing parent span %s and child span %s\n", span.SpanID.String(), missingSpan.childSpanId))
+		}
+		delete(c.missingParents, span.SpanID.String())
+		c.mutex.Unlock()
+	}
 
 	return nil
 }

@@ -6,6 +6,8 @@ import (
 	"github.com/jaegertracing/jaeger/plugin/storage/grpc/shared"
 	"github.com/jaegertracing/jaeger/storage/dependencystore"
 	"github.com/jaegertracing/jaeger/storage/spanstore"
+	"github.com/jmoiron/sqlx"
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/reflection"
@@ -17,17 +19,8 @@ import (
 )
 
 // adapted from https://github.com/jaegertracing/jaeger/blob/main/cmd/remote-storage/app/server.go
-func createGrpcHandler() (*shared.GRPCHandler, error) {
-	db, err := NewDb(NewDbOpt{
-		Username: "postgres",
-		Password: "password",
-		DbName:   "jaeger-storage",
-	})
-	if err != nil {
-		log.Println("error connecting to DB")
-		return nil, err
-	}
-	spanWriter := NewWriterDBClient(db)
+func createGrpcHandler(db *sqlx.DB, neo4jDriver *neo4j.DriverWithContext) (*shared.GRPCHandler, error) {
+	spanWriter := NewWriterDBClient(db, neo4jDriver, true)
 	spanReader := NewReaderDBClient(db)
 
 	impl := &shared.GRPCHandlerStorageImpl{
@@ -68,9 +61,10 @@ func createGrpcServer(handler *shared.GRPCHandler) (*grpc.Server, error) {
 }
 
 type GrpcServer struct {
-	server   *grpc.Server
-	grpcConn net.Listener
-	wg       sync.WaitGroup
+	server      *grpc.Server
+	grpcConn    net.Listener
+	wg          sync.WaitGroup
+	neo4jDriver neo4j.DriverWithContext
 }
 
 func (s *GrpcServer) Start() error {
@@ -102,11 +96,26 @@ func (s *GrpcServer) Close() error {
 	//}
 	s.grpcConn.Close()
 	s.wg.Wait()
+	s.neo4jDriver.Close(context.Background())
 	return nil
 }
 
 func NewGrpcServer() (*GrpcServer, error) {
-	handler, err := createGrpcHandler()
+	db, err := NewDb(NewDbOpt{
+		Username: "postgres",
+		Password: "password",
+		DbName:   "jaeger-storage",
+	})
+	if err != nil {
+		log.Println("error connecting to DB", err)
+		return nil, err
+	}
+	neo4jDriver, err := NewNeo4jDriver()
+	if err != nil {
+		log.Println("error connecting to neo4j", err)
+		return nil, err
+	}
+	handler, err := createGrpcHandler(db, neo4jDriver)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +124,10 @@ func NewGrpcServer() (*GrpcServer, error) {
 		return nil, err
 	}
 
-	return &GrpcServer{server: server}, nil
+	return &GrpcServer{
+		server:      server,
+		neo4jDriver: *neo4jDriver,
+	}, nil
 }
 
 func main() {
