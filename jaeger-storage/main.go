@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/reflection"
+	"jaeger-storage/storage"
 	"log"
 	"net"
 	"os/signal"
@@ -20,7 +21,7 @@ import (
 
 // adapted from https://github.com/jaegertracing/jaeger/blob/main/cmd/remote-storage/app/server.go
 func createGrpcHandler(db *sqlx.DB, neo4jDriver *neo4j.DriverWithContext) (*shared.GRPCHandler, error) {
-	spanWriter := NewWriterDBClient(db, neo4jDriver, true)
+	spanWriter := NewWriterDBClient(db, storage.NewNeo4jWriter(neo4jDriver))
 	spanReader := NewReaderDBClient(db)
 
 	impl := &shared.GRPCHandlerStorageImpl{
@@ -91,9 +92,6 @@ func (s *GrpcServer) serve() {
 
 func (s *GrpcServer) Close() error {
 	s.server.Stop()
-	//if err := s.grpcConn.Close(); err != nil {
-	//	return err
-	//}
 	s.grpcConn.Close()
 	s.wg.Wait()
 	s.neo4jDriver.Close(context.Background())

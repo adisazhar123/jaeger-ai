@@ -7,6 +7,7 @@ import (
 	"github.com/jaegertracing/jaeger/model"
 	"github.com/jaegertracing/jaeger/storage/spanstore"
 	"github.com/jmoiron/sqlx"
+	"jaeger-storage/common"
 	"log"
 )
 
@@ -42,7 +43,7 @@ func (r *ReaderDbClient) GetTrace(ctx context.Context, traceID model.TraceID) (*
 	warnings := make([]string, 0)
 
 	for rows.Next() {
-		var internalSpan InternalSpan
+		var internalSpan common.InternalSpan
 		if err := rows.StructScan(&internalSpan); err != nil {
 			log.Println("[GetTrace][error] an error occurred while calling structScan()", err)
 			return nil, err

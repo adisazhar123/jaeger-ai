@@ -1,4 +1,4 @@
-package main
+package common
 
 import (
 	"encoding/base64"
@@ -8,12 +8,12 @@ import (
 )
 
 // adapted from https://stackoverflow.com/questions/15334220/encode-decode-base64
-func base64Encode(in []byte) string {
+func Base64Encode(in []byte) string {
 	return base64.StdEncoding.EncodeToString(in)
 }
 
 // adapted from https://stackoverflow.com/questions/15334220/encode-decode-base64
-func base64Decode(str string) ([]byte, bool) {
+func Base64Decode(str string) ([]byte, bool) {
 	data, err := base64.StdEncoding.DecodeString(str)
 	if err != nil {
 		return []byte{}, true
@@ -21,7 +21,7 @@ func base64Decode(str string) ([]byte, bool) {
 	return data, false
 }
 
-func encodeKeyValue(kv model.KeyValue) *InternalKeyValue {
+func EncodeKeyValue(kv model.KeyValue) *InternalKeyValue {
 	return &InternalKeyValue{
 		Key:       kv.Key,
 		Value:     kv.Value(),
@@ -29,7 +29,7 @@ func encodeKeyValue(kv model.KeyValue) *InternalKeyValue {
 	}
 }
 
-func encodeLogs(logs []model.Log) ([]byte, error) {
+func EncodeLogs(logs []model.Log) ([]byte, []InternalLog, error) {
 	internalLogs := make([]InternalLog, len(logs))
 
 	for i := 0; i < len(logs); i++ {
@@ -37,7 +37,7 @@ func encodeLogs(logs []model.Log) ([]byte, error) {
 		fields := make([]InternalKeyValue, len(l.Fields))
 		for j := 0; j < len(l.Fields); j++ {
 			field := l.Fields[j]
-			newKv := encodeKeyValue(field)
+			newKv := EncodeKeyValue(field)
 			fields[j] = *newKv
 		}
 
@@ -48,10 +48,13 @@ func encodeLogs(logs []model.Log) ([]byte, error) {
 		internalLogs[i] = internalLog
 	}
 
-	return json.Marshal(internalLogs)
+	//fmt.Printf("internal logs %+v\n", internalLogs)
+
+	data, err := json.Marshal(internalLogs)
+	return data, internalLogs, err
 }
 
-func decodeLogs(data []byte) ([]model.Log, error) {
+func DecodeLogs(data []byte) ([]model.Log, error) {
 	var internalLogs []InternalLog
 	if err := json.Unmarshal(data, &internalLogs); err != nil {
 		return nil, err
@@ -77,7 +80,7 @@ func decodeLogs(data []byte) ([]model.Log, error) {
 	return decodedLogs, nil
 }
 
-func encodeReferences(references []model.SpanRef) ([]byte, []InternalSpanRef, error) {
+func EncodeReferences(references []model.SpanRef) ([]byte, []InternalSpanRef, error) {
 	internalReferences := make([]InternalSpanRef, len(references))
 	for i := 0; i < len(references); i++ {
 		ref := references[i]
@@ -93,7 +96,7 @@ func encodeReferences(references []model.SpanRef) ([]byte, []InternalSpanRef, er
 	return result, internalReferences, err
 }
 
-func decodeReferences(data []byte) ([]model.SpanRef, error) {
+func DecodeReferences(data []byte) ([]model.SpanRef, error) {
 	var internalRefs []InternalSpanRef
 	if err := json.Unmarshal(data, &internalRefs); err != nil {
 		return nil, err
@@ -122,12 +125,12 @@ func decodeReferences(data []byte) ([]model.SpanRef, error) {
 	return decodedRefs, nil
 }
 
-func encodeTags(tags []model.KeyValue) ([]byte, error) {
+func EncodeTags(tags []model.KeyValue) ([]byte, error) {
 	internalTags := make([]InternalKeyValue, len(tags))
 
 	for i := 0; i < len(tags); i++ {
 		tag := tags[i]
-		t := encodeKeyValue(tag)
+		t := EncodeKeyValue(tag)
 		internalTags[i] = *t
 	}
 
@@ -140,7 +143,7 @@ func encodeTags(tags []model.KeyValue) ([]byte, error) {
 	return encodedTags, nil
 }
 
-func decodeTags(data []byte) ([]model.KeyValue, error) {
+func DecodeTags(data []byte) ([]model.KeyValue, error) {
 	var internalTags []InternalKeyValue
 	if err := json.Unmarshal(data, &internalTags); err != nil {
 		return nil, err

@@ -1,4 +1,4 @@
-package main
+package common
 
 import (
 	"database/sql"
@@ -89,17 +89,17 @@ func (s InternalSpan) ToSpan() (*model.Span, error) {
 		operationName = s.Operation.Name
 	}
 
-	references, err := decodeReferences(s.Refs)
+	references, err := DecodeReferences(s.Refs)
 	if err != nil {
 		return nil, err
 	}
 
-	tags, err := decodeTags(s.Tags)
+	tags, err := DecodeTags(s.Tags)
 	if err != nil {
 		return nil, err
 	}
 
-	logs, err := decodeLogs(s.Logs)
+	logs, err := DecodeLogs(s.Logs)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +131,7 @@ func (s InternalSpan) getProcess() (*model.Process, error) {
 		serviceName = s.Service.Name
 	}
 
-	tags, err := decodeTags(s.ProcessTags)
+	tags, err := DecodeTags(s.ProcessTags)
 	if err != nil {
 		return nil, err
 	}

@@ -6,12 +6,12 @@ require (
 	github.com/jaegertracing/jaeger v1.62.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.10.9
+	github.com/neo4j/neo4j-go-driver/v5 v5.25.0
 	google.golang.org/grpc v1.67.1
 )
 
 require (
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/neo4j/neo4j-go-driver/v5 v5.25.0 // indirect
 	go.opentelemetry.io/otel v1.30.0 // indirect
 	go.opentelemetry.io/otel/trace v1.30.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
