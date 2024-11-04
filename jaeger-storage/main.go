@@ -21,7 +21,7 @@ import (
 
 // adapted from https://github.com/jaegertracing/jaeger/blob/main/cmd/remote-storage/app/server.go
 func createGrpcHandler(db *sqlx.DB, neo4jDriver *neo4j.DriverWithContext) (*shared.GRPCHandler, error) {
-	spanWriter := NewWriterDBClient(db, storage.NewNeo4jWriter(neo4jDriver))
+	spanWriter := NewWriterClient(storage.NewSqlWriter(db), storage.NewNeo4jWriter(neo4jDriver))
 	spanReader := NewReaderDBClient(db)
 
 	impl := &shared.GRPCHandlerStorageImpl{
@@ -75,7 +75,7 @@ func (s *GrpcServer) Start() error {
 		log.Println("[Start][error] cannot start listen", err)
 		return err
 	}
-	log.Println(fmt.Sprintf("[Start] starting grpc server at address %s", address))
+	log.Println(fmt.Sprintf("[Start] starting grpc server at address %s 🚀", address))
 	s.grpcConn = listener
 	s.wg.Add(1)
 	go s.serve()

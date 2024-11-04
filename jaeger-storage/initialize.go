@@ -20,7 +20,7 @@ func NewDb(opt NewDbOpt) (*sqlx.DB, error) {
 		fmt.Println("error while connecting to DB", err)
 		return nil, err
 	}
-
+	log.Println("[NewDb] connected to postgresql")
 	return db, err
 }
 
@@ -42,6 +42,6 @@ func NewNeo4jDriver() (*neo4j.DriverWithContext, error) {
 		log.Println(err)
 		return nil, err
 	}
-
+	log.Println("[NewNeo4jDriver] connected to neo4j")
 	return &driver, nil
 }
