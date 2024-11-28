@@ -1,3 +1,6 @@
 .idea/
 vendor/
 jaeger-storage
+*.log
+plugins
+data
