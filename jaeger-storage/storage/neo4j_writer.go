@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"github.com/jaegertracing/jaeger/model"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
+	"jaeger-storage/clients"
 	"jaeger-storage/common"
 	"log"
+	"os"
+	"strings"
 	"sync"
 )
 
@@ -19,25 +22,115 @@ type Neo4jWriter struct {
 	driver         *neo4j.DriverWithContext
 	missingParents map[string][]relationshipSpan
 	mutex          sync.Mutex
+	openaiClient   *clients.OpenAIClient
 }
 
-func NewNeo4jWriter(driver *neo4j.DriverWithContext) *Neo4jWriter {
+func NewNeo4jWriter(driver *neo4j.DriverWithContext, openaiClient *clients.OpenAIClient) *Neo4jWriter {
 	return &Neo4jWriter{
 		driver:         driver,
 		missingParents: make(map[string][]relationshipSpan),
 		mutex:          sync.Mutex{},
+		openaiClient:   openaiClient,
 	}
+}
+
+func (w *Neo4jWriter) summarizeAndCreateEmbeddings(ctx context.Context, span *model.Span, internalLogs []common.InternalLog) error {
+	spanKind, _ := span.GetSpanKind()
+	// todo: change check tags???
+	actionKind := "http"
+
+	spanRaw := fmt.Sprintf("service name: %s\noperation name: %s\nspan id: %s\nduration: %d nanoseconds\nstart time: %s\nspan kind: %s\naction kind: %s\n", span.Process.GetServiceName(), span.GetOperationName(), span.SpanID.String(), span.Duration.Nanoseconds(), span.StartTime.String(), spanKind.String(), actionKind)
+
+	spanSummary, err := w.openaiClient.SummarizeSpan(ctx, spanRaw)
+	if err != nil {
+		log.Println("[neo4j][summarizeAndCreateEmbeddings] an error occurred while summarizing the span", spanRaw, err)
+		return err
+	}
+	spanSummary = strings.ReplaceAll(spanSummary, "<summary>", "")
+	spanSummary = strings.ReplaceAll(spanSummary, "</summary>", "")
+
+	var logsRaw string
+	for i := 0; i < len(internalLogs); i++ {
+		l := internalLogs[i]
+		var value string
+		for j := 0; j < len(l.Fields); j++ {
+			currentLog := l.Fields[j]
+			value += fmt.Sprintf("%s: %s\n", currentLog.Key, currentLog.Value)
+		}
+		logsRaw += value + "\n"
+	}
+
+	logSummary, err := w.openaiClient.SummarizeLog(ctx, logsRaw)
+	if logSummary == "#EMPTY#" {
+		logSummary = ""
+	}
+
+	if err != nil {
+		log.Println("[neo4j][insertLogs][error] an error occurred summarizing the logs", logsRaw, err)
+		return err
+	}
+	logSummary = strings.ReplaceAll(logSummary, "<summary>", "")
+	logSummary = strings.ReplaceAll(logSummary, "</summary>", "")
+
+	embedding, err := w.openaiClient.CreateEmbeddings(ctx, spanSummary+logSummary)
+	if err != nil {
+		log.Println("[neo4j][summarizeAndCreateEmbeddings] an error occurred while creating the embeddings", err)
+		return err
+	}
+	//logEmbedding, err := w.openaiClient.CreateEmbeddings(ctx, logSummary)
+	//
+	//if err != nil {
+	//	log.Println("[neo4j][summarizeAndCreateEmbeddings] an error occurred while creating the log embeddings", err)
+	//	return err
+	//}
+
+	query := `
+		MATCH (span: Span { span_id: $span_id })
+		SET span.span_summary = $span_summary,
+			span.log_summary = $log_summary,
+			span.tag_summary = $tag_summary,
+			span.embedding = $embedding
+	`
+	_, err = neo4j.ExecuteQuery(ctx, *w.driver, query, map[string]any{
+		"span_id":      span.SpanID.String(),
+		"span_summary": spanSummary,
+		"log_summary":  logSummary,
+		"tag_summary":  "TODO: empty for now",
+		"embedding":    embedding,
+		//"log_embedding": logEmbedding,
+	}, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+
+	if err != nil {
+		log.Println("[neo4j][summarizeAndCreateEmbeddings] cannot set summary", err)
+		return err
+	}
+
+	log.Printf("[neo4j][summarizeAndCreateEmbeddings] successfully summarized and create embedding for span ID: %s\n", span.SpanID.String())
+
+	content := fmt.Sprintf("summary for spanid: %s\n"+
+		"raw span: %s\n"+
+		"span summary: %s\n"+
+		"raw log: %s\n"+
+		"log summary: %s\n"+
+		"--------------------------------\n", span.SpanID.String(), spanRaw, spanSummary, logsRaw, logSummary)
+
+	if os.Getenv("DEBUG_SUMMARY") == "true" {
+		common.WriteToFile("summary.log", content)
+	}
+
+	return nil
 }
 
 func (w *Neo4jWriter) upsertServiceTraceSpan(ctx context.Context, span *model.Span) error {
 	neo4jQuery := `
 			MERGE (service: Service {name: $service_name})
-			MERGE (trace: Trace { trace_id: $trace_id, summary: $trace_summary })
+			MERGE (trace: Trace { trace_id: $trace_id })
 			MERGE (span: Span {
 				operation_name: $operation_name,
 				span_id: $span_id,
 				duration: $duration,
 				start_time: $start_time,
+				span_summary: $span_summary,
 				log_summary: $log_summary,
 				tag_summary: $tag_summary,
 				span_kind: $span_kind,
@@ -49,6 +142,9 @@ func (w *Neo4jWriter) upsertServiceTraceSpan(ctx context.Context, span *model.Sp
 			RETURN (span)
 		`
 	spanKind, _ := span.GetSpanKind()
+	// todo: change check tags???
+	actionKind := "http"
+
 	param := map[string]any{
 		"service_name":   span.Process.GetServiceName(),
 		"operation_name": span.GetOperationName(),
@@ -57,10 +153,11 @@ func (w *Neo4jWriter) upsertServiceTraceSpan(ctx context.Context, span *model.Sp
 		"start_time":     span.StartTime,
 		"log_summary":    "TODO: empty-for-now",
 		"tag_summary":    "TODO: empty-for-now",
-		"trace_summary":  "TODO: empty-for-now",
-		"span_kind":      spanKind.String(),
+		//"trace_summary":  "TODO: empty-for-now",
+		"span_summary": "TODO: empty-for-now",
+		"span_kind":    spanKind.String(),
 		// TODO: lookup from tags/logs
-		"action_kind":        "http",
+		"action_kind":        actionKind,
 		"action_status_code": "TODO: empty for now",
 		"trace_id":           span.TraceID.String(),
 	}
@@ -77,7 +174,7 @@ func (w *Neo4jWriter) upsertServiceTraceSpan(ctx context.Context, span *model.Sp
 
 func (w *Neo4jWriter) insertLogs(ctx context.Context, span *model.Span, internalLogs []common.InternalLog) error {
 	createLogsQuery := `
-			MATCH(span: Span { span_id: $span_id })
+			MATCH(span: Span { span_id: $span_id })	
 			CREATE (n: Log { value: $value, timestamp: $timestamp })<-[r:PRODUCES]-(span)	
 		`
 	for i := 0; i < len(internalLogs); i++ {
@@ -85,7 +182,6 @@ func (w *Neo4jWriter) insertLogs(ctx context.Context, span *model.Span, internal
 		var value string
 		for j := 0; j < len(l.Fields); j++ {
 			currentLog := l.Fields[j]
-
 			value += fmt.Sprintf("%s: %s\n", currentLog.Key, currentLog.Value)
 		}
 
@@ -114,6 +210,8 @@ func (w *Neo4jWriter) createRelationshipBetweenSpan(ctx context.Context, span *m
 		if r.RefType == uint64(model.SpanRefType_FOLLOWS_FROM) {
 			relationShip = "INVOKES_FOLLOWS"
 		}
+		// relationship type cannot be bind using params, it has to be done via string concatenation
+		// see: https://neo4j.com/docs/go-manual/current/query-advanced/#_dynamic_values_in_property_keys_relationship_types_and_labels
 		q := fmt.Sprintf(`
 				match(span_child: Span { span_id: $span_id_child })
 				match(span_parent: Span { span_id: $span_id_parent })
@@ -195,6 +293,10 @@ func (w *Neo4jWriter) WriteSpan(ctx context.Context, span *model.Span, internalR
 		}
 
 		if err := w.associateMissingSpan(ctx, span); err != nil {
+			return err
+		}
+
+		if err := w.summarizeAndCreateEmbeddings(ctx, span, internalLogs); err != nil {
 			return err
 		}
 	}

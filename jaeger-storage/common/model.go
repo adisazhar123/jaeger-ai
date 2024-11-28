@@ -11,11 +11,12 @@ import (
 
 type InternalKeyValue struct {
 	Key       string          `json:"key,omitempty"`
-	Value     any             `json:"value,omitempty"`
+	Value     interface{}     `json:"value,omitempty"`
 	ValueType model.ValueType `json:"value_type"`
 }
 
 func (kv InternalKeyValue) ToKeyValue() model.KeyValue {
+	fmt.Printf("key: %s, val: %s\n", kv.Key, kv.Value)
 	newKv := model.KeyValue{}
 	newKv.Key = kv.Key
 	newKv.VType = kv.ValueType
@@ -24,7 +25,14 @@ func (kv InternalKeyValue) ToKeyValue() model.KeyValue {
 	} else if kv.ValueType == model.ValueType_BOOL {
 		newKv.VBool = kv.Value.(bool)
 	} else if kv.ValueType == model.ValueType_INT64 {
-		newKv.VInt64 = kv.Value.(int64)
+		// when decoding int64, golang treats numbers as float
+		// so we have to check if typecasting to int64 it works
+		// otherwise, typecast it to float64 then to int64
+		v, ok := kv.Value.(int64)
+		if !ok {
+			v = int64(kv.Value.(float64))
+		}
+		newKv.VInt64 = v
 	} else if kv.ValueType == model.ValueType_FLOAT64 {
 		newKv.VFloat64 = kv.Value.(float64)
 	} else if kv.ValueType == model.ValueType_BINARY {
@@ -48,21 +56,22 @@ type InternalSpanRef struct {
 }
 
 type InternalSpan struct {
-	Id          int64              `db:"id"`
-	SpanId      string             `db:"span_id"`
-	TraceId     string             `db:"trace_id"`
-	OperationId int64              `db:"operation_id"`
-	Operation   *InternalOperation `db:"operation"`
-	Flags       uint64             `db:"flags"`
-	StartTime   time.Time          `db:"start_time"`
-	Duration    time.Duration      `db:"duration"`
-	Tags        []byte             `db:"tags"`
-	ServiceId   int64              `db:"service_id"`
-	Service     *InternalService   `db:"service"`
-	ProcessId   string             `db:"process_id"`
-	ProcessTags []byte             `db:"process_tags"`
-	Warnings    []string           `db:"warnings"`
-	WarningsPq  interface {
+	Id             int64              `db:"id"`
+	SpanId         string             `db:"span_id"`
+	TraceId        string             `db:"trace_id"`
+	OperationId    int64              `db:"operation_id"`
+	Operation      *InternalOperation `db:"operation"`
+	Flags          uint64             `db:"flags"`
+	StartTime      time.Time          `db:"start_time"`
+	Duration       time.Duration      `db:"duration_"`
+	DurationCustom []uint8            `db:"duration"`
+	Tags           []byte             `db:"tags"`
+	ServiceId      int64              `db:"service_id"`
+	Service        *InternalService   `db:"service"`
+	ProcessId      string             `db:"process_id"`
+	ProcessTags    []byte             `db:"process_tags"`
+	Warnings       *[]string          `db:"warnings"`
+	WarningsPq     interface {
 		driver.Valuer
 		sql.Scanner
 	} `db:"warnings_pq_array"`
@@ -94,6 +103,7 @@ func (s InternalSpan) ToSpan() (*model.Span, error) {
 		return nil, err
 	}
 
+	log.Println("decode tags span id", s.SpanId)
 	tags, err := DecodeTags(s.Tags)
 	if err != nil {
 		return nil, err
@@ -109,7 +119,7 @@ func (s InternalSpan) ToSpan() (*model.Span, error) {
 		return nil, err
 	}
 
-	return &model.Span{
+	span := &model.Span{
 		TraceID:       traceId,
 		SpanID:        spanId,
 		OperationName: operationName,
@@ -121,8 +131,15 @@ func (s InternalSpan) ToSpan() (*model.Span, error) {
 		Logs:          logs,
 		Process:       process,
 		ProcessID:     s.ProcessId,
-		Warnings:      s.Warnings,
-	}, nil
+	}
+
+	if s.Warnings == nil {
+		span.Warnings = []string{}
+	} else {
+		span.Warnings = *s.Warnings
+	}
+
+	return span, nil
 }
 
 func (s InternalSpan) getProcess() (*model.Process, error) {

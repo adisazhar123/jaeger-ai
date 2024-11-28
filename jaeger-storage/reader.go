@@ -20,8 +20,34 @@ func NewReaderDBClient(db *sqlx.DB) *ReaderDbClient {
 }
 
 func (r *ReaderDbClient) GetTrace(ctx context.Context, traceID model.TraceID) (*model.Trace, error) {
+	log.Println("in get trace", traceID.String())
 	//goland:noinspection ALL
-	query := "SELECT spans.*, operations.name as \"operation.name\", operations.service_id as \"operation.service_id\", operations.kind as \"operation.kind\", services.id as \"services.id\", services.name as \"service.name\" FROM spans INNER JOIN operations on operations.id = spans.operation_id INNER JOIN services on services.id = operations.service_id WHERE trace_id = :trace_id AND spans.deleted_at IS NULL"
+	query := `
+	SELECT spans.id              as id,
+		   spans.span_id         as span_id,
+		   spans.trace_id        as trace_id,
+		   spans.operation_id    as operation_id,
+		   spans.flags           as flags,
+		   spans.start_time      as start_time,
+		   spans.duration        as duration,
+		   spans.tags            as tags,
+		   spans.service_id      as service_id,
+		   spans.process_id      as process_id,
+		   spans.process_tags    as process_tags,
+		   spans.warnings        as warnings,
+		   spans.refs            as refs,
+		   spans.logs            as logs,
+		   operations.name       as "operation.name",
+		   operations.service_id as "operation.service_id",
+		   operations.kind       as "operation.kind",
+		   services.id           as "service.id",
+		   services.name         as "service.name"
+	FROM spans
+			 INNER JOIN operations on operations.id = spans.operation_id
+			 INNER JOIN services on services.id = operations.service_id
+	WHERE trace_id = :trace_id
+	  AND spans.deleted_at IS NULL
+`
 
 	rows, err := r.db.NamedQueryContext(ctx, query, struct {
 		TraceId string `db:"trace_id"`

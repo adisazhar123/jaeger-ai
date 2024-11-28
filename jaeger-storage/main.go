@@ -11,17 +11,19 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/reflection"
+	"jaeger-storage/clients"
 	"jaeger-storage/storage"
 	"log"
 	"net"
+	"net/http"
 	"os/signal"
 	"sync"
 	"syscall"
 )
 
 // adapted from https://github.com/jaegertracing/jaeger/blob/main/cmd/remote-storage/app/server.go
-func createGrpcHandler(db *sqlx.DB, neo4jDriver *neo4j.DriverWithContext) (*shared.GRPCHandler, error) {
-	spanWriter := NewWriterClient(storage.NewSqlWriter(db), storage.NewNeo4jWriter(neo4jDriver))
+func createGrpcHandler(db *sqlx.DB, neo4jDriver *neo4j.DriverWithContext, openaiClient *clients.OpenAIClient) (*shared.GRPCHandler, error) {
+	spanWriter := NewWriterClient(storage.NewSqlWriter(db), storage.NewNeo4jWriter(neo4jDriver, openaiClient))
 	spanReader := NewReaderDBClient(db)
 
 	impl := &shared.GRPCHandlerStorageImpl{
@@ -98,22 +100,8 @@ func (s *GrpcServer) Close() error {
 	return nil
 }
 
-func NewGrpcServer() (*GrpcServer, error) {
-	db, err := NewDb(NewDbOpt{
-		Username: "postgres",
-		Password: "password",
-		DbName:   "jaeger-storage",
-	})
-	if err != nil {
-		log.Println("error connecting to DB", err)
-		return nil, err
-	}
-	neo4jDriver, err := NewNeo4jDriver()
-	if err != nil {
-		log.Println("error connecting to neo4j", err)
-		return nil, err
-	}
-	handler, err := createGrpcHandler(db, neo4jDriver)
+func NewGrpcServer(db *sqlx.DB, neo4jDriver *neo4j.DriverWithContext, openaiClient *clients.OpenAIClient) (*GrpcServer, error) {
+	handler, err := createGrpcHandler(db, neo4jDriver, openaiClient)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +117,25 @@ func NewGrpcServer() (*GrpcServer, error) {
 }
 
 func main() {
-	server, err := NewGrpcServer()
+	MakeSureThingsAreOk()
+	db, err := NewDb(NewDbOpt{
+		Username: "postgres",
+		Password: "password",
+		DbName:   "jaeger-storage",
+	})
+	if err != nil {
+		log.Println("error connecting to DB", err)
+		return
+	}
+
+	neo4jDriver, err := NewNeo4jDriver()
+	if err != nil {
+		log.Println("error connecting to neo4j", err)
+		return
+	}
+
+	openaiClient := clients.NewOpenAIClient()
+	server, err := NewGrpcServer(db, neo4jDriver, openaiClient)
 	if err != nil {
 		log.Fatalln("[main] cannot create new grpc server", err)
 	}
@@ -139,12 +145,24 @@ func main() {
 
 	if err := server.Start(); err != nil {
 		log.Fatalln("[main] cannot start grpc server", err)
+		return
 	}
 
+	router := NewRouter(openaiClient, neo4jDriver, db)
+
+	go func() {
+		if err := http.ListenAndServe(":54320", router); err != nil {
+			log.Fatalln("[main] cannot start http server", err)
+			return
+		}
+	}()
+
+	log.Println("[main] starting http server at address 54320 🚀")
+
 	<-ctx.Done()
-	log.Println("[main] stopping grpc server, received a signal")
+	log.Println("[main] stopping servers, received a signal")
 	if err := server.Close(); err != nil {
-		log.Fatalln("[main] cannot close grpc server", err)
+		log.Fatalln("[main] cannot close server", err)
 	}
 
 	log.Println("[main] bye bye 👋")

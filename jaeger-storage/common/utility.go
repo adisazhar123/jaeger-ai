@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/jaegertracing/jaeger/model"
 	"log"
+	"os"
 )
 
 // adapted from https://stackoverflow.com/questions/15334220/encode-decode-base64
@@ -63,7 +64,7 @@ func DecodeLogs(data []byte) ([]model.Log, error) {
 	for i := 0; i < len(internalLogs); i++ {
 		internalLog := internalLogs[i]
 
-		decodedFields := make([]model.KeyValue, len(internalLog.Fields))
+		decodedFields := make([]model.KeyValue, 0)
 		for j := 0; j < len(internalLog.Fields); j++ {
 			field := internalLog.Fields[j]
 			decodedField := field.ToKeyValue()
@@ -99,6 +100,7 @@ func EncodeReferences(references []model.SpanRef) ([]byte, []InternalSpanRef, er
 func DecodeReferences(data []byte) ([]model.SpanRef, error) {
 	var internalRefs []InternalSpanRef
 	if err := json.Unmarshal(data, &internalRefs); err != nil {
+		log.Println(err)
 		return nil, err
 	}
 	decodedRefs := make([]model.SpanRef, len(internalRefs))
@@ -156,4 +158,19 @@ func DecodeTags(data []byte) ([]model.KeyValue, error) {
 	}
 
 	return tags, nil
+}
+
+func WriteToFile(filename string, content string) error {
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	if _, err = f.WriteString(content); err != nil {
+		return err
+	}
+
+	return nil
 }

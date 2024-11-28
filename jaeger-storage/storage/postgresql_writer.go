@@ -88,7 +88,7 @@ func (w *SqlWriter) WriteSpan(ctx context.Context, span *model.Span, tags, proce
 		ServiceId:   serviceId,
 		ProcessId:   span.ProcessID,
 		ProcessTags: processTags,
-		Warnings:    span.Warnings,
+		Warnings:    &span.Warnings,
 		WarningsPq:  pq.Array(span.Warnings),
 		Logs:        logs,
 		Kind:        spanKind.String(),
