@@ -1,0 +1,11 @@
+FROM golang:1.23.3-bullseye
+
+WORKDIR /app
+
+COPY . /app
+
+RUN pwd && ls
+
+RUN go build .
+
+ENTRYPOINT ["/app/jaeger-storage"]
