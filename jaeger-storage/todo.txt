@@ -1,9 +1,17 @@
-1. insert to `traces` table and summarize
-2. summarize the spans
-3. create knowledge graph
+1. (DONE) insert to `traces` table and summarize
+2. (DONE) summarize the spans
+3. (DONE) create knowledge graph
     BUG:
     - while  creating the graph, there seems to be some relationship not added
     - for e.g. 88edbbb1e8ccf9d3 should be invoked by 97cafb8b8e8cb238
     - TO CHECK: maybe the write spans are not coming in sequentially?
     - bug is fized
 4. [optional maybe] implement dependencystore/interface
+
+
+--
+27/11/2024
+1. (DONE) search traces by query
+2. (TODO) bug in duration, it is showing 0 seconds
+3. (TODO) /ask endpoint
+4. evaluation
