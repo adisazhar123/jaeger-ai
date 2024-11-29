@@ -16,7 +16,7 @@ type InternalKeyValue struct {
 }
 
 func (kv InternalKeyValue) ToKeyValue() model.KeyValue {
-	fmt.Printf("key: %s, val: %s\n", kv.Key, kv.Value)
+	//fmt.Printf("key: %s, val: %s\n", kv.Key, kv.Value)
 	newKv := model.KeyValue{}
 	newKv.Key = kv.Key
 	newKv.VType = kv.ValueType
@@ -103,7 +103,7 @@ func (s InternalSpan) ToSpan() (*model.Span, error) {
 		return nil, err
 	}
 
-	log.Println("decode tags span id", s.SpanId)
+	//log.Println("decode tags span id", s.SpanId)
 	tags, err := DecodeTags(s.Tags)
 	if err != nil {
 		return nil, err

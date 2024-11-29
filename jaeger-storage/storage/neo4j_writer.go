@@ -48,6 +48,7 @@ func (w *Neo4jWriter) summarizeAndCreateEmbeddings(ctx context.Context, span *mo
 	}
 	spanSummary = strings.ReplaceAll(spanSummary, "<summary>", "")
 	spanSummary = strings.ReplaceAll(spanSummary, "</summary>", "")
+	spanSummary = strings.TrimSpace(spanSummary)
 
 	var logsRaw string
 	for i := 0; i < len(internalLogs); i++ {
@@ -61,9 +62,8 @@ func (w *Neo4jWriter) summarizeAndCreateEmbeddings(ctx context.Context, span *mo
 	}
 
 	logSummary, err := w.openaiClient.SummarizeLog(ctx, logsRaw)
-	if logSummary == "#EMPTY#" {
-		logSummary = ""
-	}
+	logSummary = strings.TrimSpace(logSummary)
+	logSummary = strings.ReplaceAll(logSummary, "#EMPTY#", "")
 
 	if err != nil {
 		log.Println("[neo4j][insertLogs][error] an error occurred summarizing the logs", logsRaw, err)
@@ -71,24 +71,20 @@ func (w *Neo4jWriter) summarizeAndCreateEmbeddings(ctx context.Context, span *mo
 	}
 	logSummary = strings.ReplaceAll(logSummary, "<summary>", "")
 	logSummary = strings.ReplaceAll(logSummary, "</summary>", "")
+	logSummary = strings.TrimSpace(logSummary)
 
 	embedding, err := w.openaiClient.CreateEmbeddings(ctx, spanSummary+logSummary)
 	if err != nil {
 		log.Println("[neo4j][summarizeAndCreateEmbeddings] an error occurred while creating the embeddings", err)
 		return err
 	}
-	//logEmbedding, err := w.openaiClient.CreateEmbeddings(ctx, logSummary)
-	//
-	//if err != nil {
-	//	log.Println("[neo4j][summarizeAndCreateEmbeddings] an error occurred while creating the log embeddings", err)
-	//	return err
-	//}
 
 	query := `
 		MATCH (span: Span { span_id: $span_id })
 		SET span.span_summary = $span_summary,
 			span.log_summary = $log_summary,
 			span.tag_summary = $tag_summary,
+			span.summary = $summary,
 			span.embedding = $embedding
 	`
 	_, err = neo4j.ExecuteQuery(ctx, *w.driver, query, map[string]any{
@@ -97,6 +93,7 @@ func (w *Neo4jWriter) summarizeAndCreateEmbeddings(ctx context.Context, span *mo
 		"log_summary":  logSummary,
 		"tag_summary":  "TODO: empty for now",
 		"embedding":    embedding,
+		"summary":      spanSummary + logSummary,
 		//"log_embedding": logEmbedding,
 	}, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
 
@@ -114,7 +111,7 @@ func (w *Neo4jWriter) summarizeAndCreateEmbeddings(ctx context.Context, span *mo
 		"log summary: %s\n"+
 		"--------------------------------\n", span.SpanID.String(), spanRaw, spanSummary, logsRaw, logSummary)
 
-	if os.Getenv("DEBUG_SUMMARY") == "true" {
+	if os.Getenv("DEBUG") == "true" {
 		common.WriteToFile("summary.log", content)
 	}
 

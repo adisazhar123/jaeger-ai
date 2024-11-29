@@ -9,6 +9,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/neo4j/neo4j-go-driver/v5 v5.25.0
 	github.com/sashabaranov/go-openai v1.35.6
+	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842
 	google.golang.org/grpc v1.67.1
 )
 

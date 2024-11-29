@@ -15,11 +15,6 @@ OPTIONS { indexConfig: {
     `vector.similarity_function`: 'cosine'
 }}
 
-
-CREATE VECTOR INDEX span_log_summary IF NOT EXISTS
+CREATE FULLTEXT INDEX span_summary_fulltext IF NOT EXISTS
 FOR (s: Span)
-ON s.log_embedding
-OPTIONS { indexConfig: {
-`vector.dimensions`: 1536,
-`vector.similarity_function`: 'cosine'
-}}
+ON EACH [s.summary]
