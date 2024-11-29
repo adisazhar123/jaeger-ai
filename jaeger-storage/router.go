@@ -372,8 +372,16 @@ func NewRouter(openaiClient *clients.OpenAIClient, neo4jDriver *neo4j.DriverWith
 			}
 			nodes += localNode
 		}
+		passage := edges + "\n" + nodes
+		answer, err := openaiClient.GenerateAnswer(ctx, req.Question, passage)
 
-		c.String(200, edges+"\n"+nodes)
+		if err != nil {
+			log.Println("an error occurred while generating an answer", err)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		c.String(http.StatusOK, fmt.Sprintf("answer: %s\npassage: %s", answer, passage))
 		return
 		// else if trace_id does not exist
 		// perform vector search, from that starting node, aggregate k hops
