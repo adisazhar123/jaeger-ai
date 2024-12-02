@@ -3,7 +3,7 @@ import openai
 import json
 
 class OpenAITraceAnalyzer:
-    def __init__(self, model="gpt-3.5-turbo"):
+    def __init__(self, model="gpt-4o-mini"):
         # Retrieve the API key from environment variables
         self.api_key = os.getenv("OPENAI_API_KEY")
         if not self.api_key:
@@ -46,7 +46,7 @@ class OpenAITraceAnalyzer:
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7,
-            max_tokens=500
+            max_tokens=1000  # Limit tokens to avoid overflow
         )
         return response['choices'][0]['message']['content'].strip()
 
@@ -54,6 +54,11 @@ class OpenAITraceAnalyzer:
         """
         Analyzes large JSON data by processing it in smaller chunks.
         """
+        if task == "summarize_trace":
+            # Handle large data for summarization task
+            return self.summarize_large_trace(json_data)
+
+        # Generic processing for other tasks
         results = []
         for trace in json_data.get("data", []):
             prompt = self.generate_prompt(task, {"data": [trace]})
@@ -61,12 +66,35 @@ class OpenAITraceAnalyzer:
             results.append(result)
         return "\n".join(results)
 
+    def summarize_large_trace(self, json_data):
+        """
+        Summarizes large JSON trace data by chunking spans.
+        """
+        spans = json_data.get("data", [])[0].get("spans", [])  # Extract spans
+        trace_id = json_data.get("data", [])[0].get("traceID", "unknown")
+        chunk_size = 1000  # Adjust chunk size to fit within token limits
+        summaries = []
+
+        for i in range(0, len(spans), chunk_size):
+            chunk = spans[i:i + chunk_size]
+            chunk_data = {"traceID": trace_id, "spans": chunk}
+            prompt = self.generate_prompt("summarize_trace", {"data": [chunk_data]})
+            summary = self.query_openai(prompt)
+            summaries.append(summary)
+
+        # Combine partial summaries
+        final_summary_prompt = (
+            f"Combine the following partial summaries into a concise overview for Trace ID '{trace_id}':\n"
+            + "\n".join(summaries)
+        )
+        return self.query_openai(final_summary_prompt)
+
 
 # Main Program
 if __name__ == "__main__":
     analyzer = OpenAITraceAnalyzer()
 
-    for i in range(1, 20):  # Iterate through files hotrod1.json to hotrod10.json
+    for i in range(29, 30):  # Iterate through files hotrod1.json to hotrod30.json
         file_path = f"./SampleData/hotrod{i}.json"
         print(f"\nProcessing file: {file_path}")
 
