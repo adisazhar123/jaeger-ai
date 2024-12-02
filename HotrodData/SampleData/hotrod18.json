@@ -1,0 +1,4138 @@
+{
+    "data": [
+        {
+            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+            "spans": [
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "cf9099de926e9170",
+                    "operationName": "/dispatch",
+                    "references": [],
+                    "startTime": 1733164927491253,
+                    "duration": 1259551,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 40
+                        },
+                        {
+                            "key": "http.route",
+                            "type": "string",
+                            "value": "/dispatch"
+                        },
+                        {
+                            "key": "http.scheme",
+                            "type": "string",
+                            "value": "http"
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.target",
+                            "type": "string",
+                            "value": "/dispatch"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.host.name",
+                            "type": "string",
+                            "value": "localhost"
+                        },
+                        {
+                            "key": "net.host.port",
+                            "type": "int64",
+                            "value": 8080
+                        },
+                        {
+                            "key": "net.protocol.version",
+                            "type": "string",
+                            "value": "1.1"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "192.168.65.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 34149
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        },
+                        {
+                            "key": "user_agent.original",
+                            "type": "string",
+                            "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164927491294,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "HTTP request received"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "method",
+                                    "type": "string",
+                                    "value": "GET"
+                                },
+                                {
+                                    "key": "url",
+                                    "type": "string",
+                                    "value": "/dispatch?customer=392\u0026nonse=0.2977758812161253"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164927491424,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Getting customer"
+                                },
+                                {
+                                    "key": "customer_id",
+                                    "type": "int64",
+                                    "value": 392
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928302416,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Found customer"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928302518,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Finding nearest drivers"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "location",
+                                    "type": "string",
+                                    "value": "577,322"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928548118,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Found drivers"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928548221,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Finding route"
+                                },
+                                {
+                                    "key": "dropoff",
+                                    "type": "string",
+                                    "value": "577,322"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "pickup",
+                                    "type": "string",
+                                    "value": "537,328"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928548271,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Finding route"
+                                },
+                                {
+                                    "key": "dropoff",
+                                    "type": "string",
+                                    "value": "577,322"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "pickup",
+                                    "type": "string",
+                                    "value": "404,409"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928548359,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Finding route"
+                                },
+                                {
+                                    "key": "dropoff",
+                                    "type": "string",
+                                    "value": "577,322"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "pickup",
+                                    "type": "string",
+                                    "value": "572,261"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928599526,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Finding route"
+                                },
+                                {
+                                    "key": "dropoff",
+                                    "type": "string",
+                                    "value": "577,322"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "pickup",
+                                    "type": "string",
+                                    "value": "594,934"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928603029,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Finding route"
+                                },
+                                {
+                                    "key": "dropoff",
+                                    "type": "string",
+                                    "value": "577,322"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "pickup",
+                                    "type": "string",
+                                    "value": "99,589"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928609594,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Finding route"
+                                },
+                                {
+                                    "key": "dropoff",
+                                    "type": "string",
+                                    "value": "577,322"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "pickup",
+                                    "type": "string",
+                                    "value": "980,901"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928647123,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Finding route"
+                                },
+                                {
+                                    "key": "dropoff",
+                                    "type": "string",
+                                    "value": "577,322"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "pickup",
+                                    "type": "string",
+                                    "value": "665,284"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928651441,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Finding route"
+                                },
+                                {
+                                    "key": "dropoff",
+                                    "type": "string",
+                                    "value": "577,322"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "pickup",
+                                    "type": "string",
+                                    "value": "968,79"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928662451,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Finding route"
+                                },
+                                {
+                                    "key": "dropoff",
+                                    "type": "string",
+                                    "value": "577,322"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "pickup",
+                                    "type": "string",
+                                    "value": "126,408"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928703893,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Finding route"
+                                },
+                                {
+                                    "key": "dropoff",
+                                    "type": "string",
+                                    "value": "577,322"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "pickup",
+                                    "type": "string",
+                                    "value": "216,904"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928750582,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Found routes"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928750710,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Dispatch successful"
+                                },
+                                {
+                                    "key": "driver",
+                                    "type": "string",
+                                    "value": "T763566C"
+                                },
+                                {
+                                    "key": "eta",
+                                    "type": "string",
+                                    "value": "2m0s"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "fdba673c337914b8",
+                    "operationName": "/route",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "d8844bd558c36435"
+                        }
+                    ],
+                    "startTime": 1733164928599876,
+                    "duration": 46916,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.route",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "http.scheme",
+                            "type": "string",
+                            "value": "http"
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.target",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.host.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.host.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "net.protocol.version",
+                            "type": "string",
+                            "value": "1.1"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 42924
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        },
+                        {
+                            "key": "user_agent.original",
+                            "type": "string",
+                            "value": "Go-http-client/1.1"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928599906,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "HTTP request received"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "method",
+                                    "type": "string",
+                                    "value": "GET"
+                                },
+                                {
+                                    "key": "url",
+                                    "type": "string",
+                                    "value": "/route?dropoff=577%2C322\u0026pickup=594%2C934"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p2",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "6856409ba0f6aca4",
+                    "operationName": "/route",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "31b821335f67a2ce"
+                        }
+                    ],
+                    "startTime": 1733164928647558,
+                    "duration": 55889,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.route",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "http.scheme",
+                            "type": "string",
+                            "value": "http"
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.target",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.host.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.host.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "net.protocol.version",
+                            "type": "string",
+                            "value": "1.1"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 42924
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        },
+                        {
+                            "key": "user_agent.original",
+                            "type": "string",
+                            "value": "Go-http-client/1.1"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928647583,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "HTTP request received"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "method",
+                                    "type": "string",
+                                    "value": "GET"
+                                },
+                                {
+                                    "key": "url",
+                                    "type": "string",
+                                    "value": "/route?dropoff=577%2C322\u0026pickup=665%2C284"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p2",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "45052562c5bb829a",
+                    "operationName": "HTTP GET",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "cf9099de926e9170"
+                        }
+                    ],
+                    "startTime": 1733164927491555,
+                    "duration": 810822,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.url",
+                            "type": "string",
+                            "value": "http://0.0.0.0:8081/customer?customer=392"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.peer.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.peer.port",
+                            "type": "int64",
+                            "value": 8081
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "36f3d05621bbf45b",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928455223,
+                    "duration": 13844,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T785857C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928468955,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Got driver's ID"
+                                },
+                                {
+                                    "key": "driverID",
+                                    "type": "string",
+                                    "value": "T785857C"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "55c1da80d5f986d8",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928525796,
+                    "duration": 12124,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T761327C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928537841,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Got driver's ID"
+                                },
+                                {
+                                    "key": "driverID",
+                                    "type": "string",
+                                    "value": "T761327C"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "e0200fb2c773045c",
+                    "operationName": "driver.DriverService/FindNearest",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "311a2d0ca1ddd313"
+                        }
+                    ],
+                    "startTime": 1733164928303034,
+                    "duration": 244735,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 50538
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "rpc.grpc.status_code",
+                            "type": "int64",
+                            "value": 0
+                        },
+                        {
+                            "key": "rpc.method",
+                            "type": "string",
+                            "value": "FindNearest"
+                        },
+                        {
+                            "key": "rpc.service",
+                            "type": "string",
+                            "value": "driver.DriverService"
+                        },
+                        {
+                            "key": "rpc.system",
+                            "type": "string",
+                            "value": "grpc"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928303079,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Searching for nearby drivers"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "location",
+                                    "type": "string",
+                                    "value": "577,322"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928355402,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Retrying GetDriver after error"
+                                },
+                                {
+                                    "key": "error",
+                                    "type": "string",
+                                    "value": "redis timeout"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "error"
+                                },
+                                {
+                                    "key": "retry_no",
+                                    "type": "int64",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928443276,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Retrying GetDriver after error"
+                                },
+                                {
+                                    "key": "error",
+                                    "type": "string",
+                                    "value": "redis timeout"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "error"
+                                },
+                                {
+                                    "key": "retry_no",
+                                    "type": "int64",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928525736,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Retrying GetDriver after error"
+                                },
+                                {
+                                    "key": "error",
+                                    "type": "string",
+                                    "value": "redis timeout"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "error"
+                                },
+                                {
+                                    "key": "retry_no",
+                                    "type": "int64",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928547632,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Search successful"
+                                },
+                                {
+                                    "key": "driver_count",
+                                    "type": "int64",
+                                    "value": 10
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "locations",
+                                    "type": "string",
+                                    "value": "[{\"driverID\":\"T731848C\",\"location\":\"404,409\"},{\"driverID\":\"T732420C\",\"location\":\"572,261\"},{\"driverID\":\"T763566C\",\"location\":\"537,328\"},{\"driverID\":\"T718759C\",\"location\":\"594,934\"},{\"driverID\":\"T730352C\",\"location\":\"99,589\"},{\"driverID\":\"T785857C\",\"location\":\"980,901\"},{\"driverID\":\"T733316C\",\"location\":\"665,284\"},{\"driverID\":\"T712905C\",\"location\":\"968,79\"},{\"driverID\":\"T761327C\",\"location\":\"126,408\"},{\"driverID\":\"T768006C\",\"location\":\"216,904\"}]"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p4",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "705411d08a9b4bb1",
+                    "operationName": "HTTP GET",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "cf9099de926e9170"
+                        }
+                    ],
+                    "startTime": 1733164928651748,
+                    "duration": 52503,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 58
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.url",
+                            "type": "string",
+                            "value": "http://0.0.0.0:8083/route?dropoff=577%2C322\u0026pickup=968%2C79"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.peer.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.peer.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "4a6561d995314e17",
+                    "operationName": "/route",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "4877e06480fdbb2b"
+                        }
+                    ],
+                    "startTime": 1733164928548837,
+                    "duration": 60316,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.route",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "http.scheme",
+                            "type": "string",
+                            "value": "http"
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.target",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.host.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.host.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "net.protocol.version",
+                            "type": "string",
+                            "value": "1.1"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 35648
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        },
+                        {
+                            "key": "user_agent.original",
+                            "type": "string",
+                            "value": "Go-http-client/1.1"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928548855,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "HTTP request received"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "method",
+                                    "type": "string",
+                                    "value": "GET"
+                                },
+                                {
+                                    "key": "url",
+                                    "type": "string",
+                                    "value": "/route?dropoff=577%2C322\u0026pickup=404%2C409"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p2",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "66b05787b9c418de",
+                    "operationName": "/route",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "3bef4bdbc477c74b"
+                        }
+                    ],
+                    "startTime": 1733164928704332,
+                    "duration": 45663,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.route",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "http.scheme",
+                            "type": "string",
+                            "value": "http"
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.target",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.host.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.host.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "net.protocol.version",
+                            "type": "string",
+                            "value": "1.1"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 42924
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        },
+                        {
+                            "key": "user_agent.original",
+                            "type": "string",
+                            "value": "Go-http-client/1.1"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928704374,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "HTTP request received"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "method",
+                                    "type": "string",
+                                    "value": "GET"
+                                },
+                                {
+                                    "key": "url",
+                                    "type": "string",
+                                    "value": "/route?dropoff=577%2C322\u0026pickup=216%2C904"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p2",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "a82a09eea7623454",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928469083,
+                    "duration": 12207,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T733316C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928481189,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Got driver's ID"
+                                },
+                                {
+                                    "key": "driverID",
+                                    "type": "string",
+                                    "value": "T733316C"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "83ab5ff5a811b8ea",
+                    "operationName": "HTTP GET",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "cf9099de926e9170"
+                        }
+                    ],
+                    "startTime": 1733164928662582,
+                    "duration": 52189,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.url",
+                            "type": "string",
+                            "value": "http://0.0.0.0:8083/route?dropoff=577%2C322\u0026pickup=126%2C408"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.peer.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.peer.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "3bef4bdbc477c74b",
+                    "operationName": "HTTP GET",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "cf9099de926e9170"
+                        }
+                    ],
+                    "startTime": 1733164928704025,
+                    "duration": 46488,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.url",
+                            "type": "string",
+                            "value": "http://0.0.0.0:8083/route?dropoff=577%2C322\u0026pickup=216%2C904"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.peer.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.peer.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "2e508805a269f8a2",
+                    "operationName": "/route",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "80e97f8cbb5171d0"
+                        }
+                    ],
+                    "startTime": 1733164928548547,
+                    "duration": 50581,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.route",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "http.scheme",
+                            "type": "string",
+                            "value": "http"
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.target",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.host.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.host.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "net.protocol.version",
+                            "type": "string",
+                            "value": "1.1"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 42924
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        },
+                        {
+                            "key": "user_agent.original",
+                            "type": "string",
+                            "value": "Go-http-client/1.1"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928548566,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "HTTP request received"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "method",
+                                    "type": "string",
+                                    "value": "GET"
+                                },
+                                {
+                                    "key": "url",
+                                    "type": "string",
+                                    "value": "/route?dropoff=577%2C322\u0026pickup=537%2C328"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p2",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "0fa2d73b3b8025b3",
+                    "operationName": "/route",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e5c6dd66d28dfcb6"
+                        }
+                    ],
+                    "startTime": 1733164928549167,
+                    "duration": 53613,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.route",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "http.scheme",
+                            "type": "string",
+                            "value": "http"
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.target",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.host.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.host.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "net.protocol.version",
+                            "type": "string",
+                            "value": "1.1"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 54562
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        },
+                        {
+                            "key": "user_agent.original",
+                            "type": "string",
+                            "value": "Go-http-client/1.1"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928549222,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "HTTP request received"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "method",
+                                    "type": "string",
+                                    "value": "GET"
+                                },
+                                {
+                                    "key": "url",
+                                    "type": "string",
+                                    "value": "/route?dropoff=577%2C322\u0026pickup=572%2C261"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p2",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "31b821335f67a2ce",
+                    "operationName": "HTTP GET",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "cf9099de926e9170"
+                        }
+                    ],
+                    "startTime": 1733164928647330,
+                    "duration": 56504,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.url",
+                            "type": "string",
+                            "value": "http://0.0.0.0:8083/route?dropoff=577%2C322\u0026pickup=665%2C284"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.peer.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.peer.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "1fe890ea15ea1619",
+                    "operationName": "/route",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "9c8a66328d009d87"
+                        }
+                    ],
+                    "startTime": 1733164928603362,
+                    "duration": 58616,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 58
+                        },
+                        {
+                            "key": "http.route",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "http.scheme",
+                            "type": "string",
+                            "value": "http"
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.target",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.host.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.host.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "net.protocol.version",
+                            "type": "string",
+                            "value": "1.1"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 54562
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        },
+                        {
+                            "key": "user_agent.original",
+                            "type": "string",
+                            "value": "Go-http-client/1.1"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928603404,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "HTTP request received"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "method",
+                                    "type": "string",
+                                    "value": "GET"
+                                },
+                                {
+                                    "key": "url",
+                                    "type": "string",
+                                    "value": "/route?dropoff=577%2C322\u0026pickup=99%2C589"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p2",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "7ac5d193583e675a",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928404961,
+                    "duration": 38295,
+                    "tags": [
+                        {
+                            "key": "error",
+                            "type": "bool",
+                            "value": true
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "otel.status_code",
+                            "type": "string",
+                            "value": "ERROR"
+                        },
+                        {
+                            "key": "otel.status_description",
+                            "type": "string",
+                            "value": "An error occurred"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T730352C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928443159,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "exception"
+                                },
+                                {
+                                    "key": "exception.message",
+                                    "type": "string",
+                                    "value": "redis timeout"
+                                },
+                                {
+                                    "key": "exception.type",
+                                    "type": "string",
+                                    "value": "*errors.errorString"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928443185,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "redis timeout"
+                                },
+                                {
+                                    "key": "driver_id",
+                                    "type": "string",
+                                    "value": "T730352C"
+                                },
+                                {
+                                    "key": "error",
+                                    "type": "string",
+                                    "value": "redis timeout"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "error"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "9e44f578717a681e",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928378971,
+                    "duration": 16905,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T763566C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928395782,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Got driver's ID"
+                                },
+                                {
+                                    "key": "driverID",
+                                    "type": "string",
+                                    "value": "T763566C"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "3acb1673385122d5",
+                    "operationName": "/route",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "705411d08a9b4bb1"
+                        }
+                    ],
+                    "startTime": 1733164928652551,
+                    "duration": 50895,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 58
+                        },
+                        {
+                            "key": "http.route",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "http.scheme",
+                            "type": "string",
+                            "value": "http"
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.target",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.host.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.host.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "net.protocol.version",
+                            "type": "string",
+                            "value": "1.1"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 35648
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        },
+                        {
+                            "key": "user_agent.original",
+                            "type": "string",
+                            "value": "Go-http-client/1.1"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928652579,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "HTTP request received"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "method",
+                                    "type": "string",
+                                    "value": "GET"
+                                },
+                                {
+                                    "key": "url",
+                                    "type": "string",
+                                    "value": "/route?dropoff=577%2C322\u0026pickup=968%2C79"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p2",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "007fa1b7b831d20f",
+                    "operationName": "FindDriverIDs",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928303122,
+                    "duration": 16647,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "param.driver.location",
+                            "type": "string",
+                            "value": "577,322"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928319682,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Found drivers"
+                                },
+                                {
+                                    "key": "drivers",
+                                    "type": "string",
+                                    "value": "[T731848C T732420C T763566C T718759C T730352C T785857C T733316C T712905C T761327C T768006C]"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "13aaf217c8b4b253",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928319798,
+                    "duration": 35580,
+                    "tags": [
+                        {
+                            "key": "error",
+                            "type": "bool",
+                            "value": true
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "otel.status_code",
+                            "type": "string",
+                            "value": "ERROR"
+                        },
+                        {
+                            "key": "otel.status_description",
+                            "type": "string",
+                            "value": "An error occurred"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T731848C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928355260,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "exception"
+                                },
+                                {
+                                    "key": "exception.message",
+                                    "type": "string",
+                                    "value": "redis timeout"
+                                },
+                                {
+                                    "key": "exception.type",
+                                    "type": "string",
+                                    "value": "*errors.errorString"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928355284,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "redis timeout"
+                                },
+                                {
+                                    "key": "driver_id",
+                                    "type": "string",
+                                    "value": "T731848C"
+                                },
+                                {
+                                    "key": "error",
+                                    "type": "string",
+                                    "value": "redis timeout"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "error"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "6f8d9336313ef825",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928481308,
+                    "duration": 10292,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T712905C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928491489,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Got driver's ID"
+                                },
+                                {
+                                    "key": "driverID",
+                                    "type": "string",
+                                    "value": "T712905C"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "1440fb153a7c3d27",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928395901,
+                    "duration": 8922,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T718759C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928404702,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Got driver's ID"
+                                },
+                                {
+                                    "key": "driverID",
+                                    "type": "string",
+                                    "value": "T718759C"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "311a2d0ca1ddd313",
+                    "operationName": "driver.DriverService/FindNearest",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "cf9099de926e9170"
+                        }
+                    ],
+                    "startTime": 1733164928302573,
+                    "duration": 245517,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 8082
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "rpc.grpc.status_code",
+                            "type": "int64",
+                            "value": 0
+                        },
+                        {
+                            "key": "rpc.method",
+                            "type": "string",
+                            "value": "FindNearest"
+                        },
+                        {
+                            "key": "rpc.service",
+                            "type": "string",
+                            "value": "driver.DriverService"
+                        },
+                        {
+                            "key": "rpc.system",
+                            "type": "string",
+                            "value": "grpc"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "d8844bd558c36435",
+                    "operationName": "HTTP GET",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "cf9099de926e9170"
+                        }
+                    ],
+                    "startTime": 1733164928599639,
+                    "duration": 47448,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.url",
+                            "type": "string",
+                            "value": "http://0.0.0.0:8083/route?dropoff=577%2C322\u0026pickup=594%2C934"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.peer.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.peer.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "e5c6dd66d28dfcb6",
+                    "operationName": "HTTP GET",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "cf9099de926e9170"
+                        }
+                    ],
+                    "startTime": 1733164928548411,
+                    "duration": 54585,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.url",
+                            "type": "string",
+                            "value": "http://0.0.0.0:8083/route?dropoff=577%2C322\u0026pickup=572%2C261"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.peer.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.peer.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "c294b3d0a2ee3fcf",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928443293,
+                    "duration": 11896,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T730352C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928455115,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Got driver's ID"
+                                },
+                                {
+                                    "key": "driverID",
+                                    "type": "string",
+                                    "value": "T730352C"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "f3df80662b8d051f",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928355459,
+                    "duration": 8818,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T731848C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928364254,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Got driver's ID"
+                                },
+                                {
+                                    "key": "driverID",
+                                    "type": "string",
+                                    "value": "T731848C"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "4212324979fab7ab",
+                    "operationName": "SQL SELECT",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "9afa79bf805e98ea"
+                        }
+                    ],
+                    "startTime": 1733164927491945,
+                    "duration": 809973,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "mysql"
+                        },
+                        {
+                            "key": "peer.service",
+                            "type": "string",
+                            "value": "mysql"
+                        },
+                        {
+                            "key": "request",
+                            "type": "string",
+                            "value": "5111-89"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        },
+                        {
+                            "key": "sql.query",
+                            "type": "string",
+                            "value": "SELECT * FROM customer WHERE customer_id=392"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164927491963,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Waiting for lock behind 2 transactions"
+                                },
+                                {
+                                    "key": "blockers",
+                                    "type": "string",
+                                    "value": "[5111-87 5111-88]"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164927988466,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Acquired lock; 0 transactions waiting behind"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "waiters",
+                                    "type": "string",
+                                    "value": "[]"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p5",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "9afa79bf805e98ea",
+                    "operationName": "/customer",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "45052562c5bb829a"
+                        }
+                    ],
+                    "startTime": 1733164927491842,
+                    "duration": 810175,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.route",
+                            "type": "string",
+                            "value": "/customer"
+                        },
+                        {
+                            "key": "http.scheme",
+                            "type": "string",
+                            "value": "http"
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.target",
+                            "type": "string",
+                            "value": "/customer"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.host.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.host.port",
+                            "type": "int64",
+                            "value": 8081
+                        },
+                        {
+                            "key": "net.protocol.version",
+                            "type": "string",
+                            "value": "1.1"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 49142
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        },
+                        {
+                            "key": "user_agent.original",
+                            "type": "string",
+                            "value": "Go-http-client/1.1"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164927491866,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "HTTP request received"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "method",
+                                    "type": "string",
+                                    "value": "GET"
+                                },
+                                {
+                                    "key": "url",
+                                    "type": "string",
+                                    "value": "/customer?customer=392"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164927491924,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Loading customer"
+                                },
+                                {
+                                    "key": "customer_id",
+                                    "type": "int64",
+                                    "value": 392
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p6",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "80e97f8cbb5171d0",
+                    "operationName": "HTTP GET",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "cf9099de926e9170"
+                        }
+                    ],
+                    "startTime": 1733164928548273,
+                    "duration": 51199,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.url",
+                            "type": "string",
+                            "value": "http://0.0.0.0:8083/route?dropoff=577%2C322\u0026pickup=537%2C328"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.peer.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.peer.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "9c8a66328d009d87",
+                    "operationName": "HTTP GET",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "cf9099de926e9170"
+                        }
+                    ],
+                    "startTime": 1733164928603106,
+                    "duration": 59274,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 58
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.url",
+                            "type": "string",
+                            "value": "http://0.0.0.0:8083/route?dropoff=577%2C322\u0026pickup=99%2C589"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.peer.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.peer.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "8db79fcf402e3b03",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928537943,
+                    "duration": 9627,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T768006C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928547457,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Got driver's ID"
+                                },
+                                {
+                                    "key": "driverID",
+                                    "type": "string",
+                                    "value": "T768006C"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "c116b9f7eda5816c",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928364285,
+                    "duration": 14664,
+                    "tags": [
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T732420C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928378873,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "Got driver's ID"
+                                },
+                                {
+                                    "key": "driverID",
+                                    "type": "string",
+                                    "value": "T732420C"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "c151e9e2e5d2fde6",
+                    "operationName": "/route",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "3f935e77dedd21bc"
+                        }
+                    ],
+                    "startTime": 1733164928609826,
+                    "duration": 41266,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.route",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "http.scheme",
+                            "type": "string",
+                            "value": "http"
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.target",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.host.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.host.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "net.protocol.version",
+                            "type": "string",
+                            "value": "1.1"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 35648
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        },
+                        {
+                            "key": "user_agent.original",
+                            "type": "string",
+                            "value": "Go-http-client/1.1"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928609848,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "HTTP request received"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "method",
+                                    "type": "string",
+                                    "value": "GET"
+                                },
+                                {
+                                    "key": "url",
+                                    "type": "string",
+                                    "value": "/route?dropoff=577%2C322\u0026pickup=980%2C901"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p2",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "b1ae4ccf28c8dc66",
+                    "operationName": "/route",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "83ab5ff5a811b8ea"
+                        }
+                    ],
+                    "startTime": 1733164928663000,
+                    "duration": 51511,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.route",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "http.scheme",
+                            "type": "string",
+                            "value": "http"
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.target",
+                            "type": "string",
+                            "value": "/route"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.host.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.host.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "net.protocol.version",
+                            "type": "string",
+                            "value": "1.1"
+                        },
+                        {
+                            "key": "net.sock.peer.addr",
+                            "type": "string",
+                            "value": "127.0.0.1"
+                        },
+                        {
+                            "key": "net.sock.peer.port",
+                            "type": "int64",
+                            "value": 54562
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "server"
+                        },
+                        {
+                            "key": "user_agent.original",
+                            "type": "string",
+                            "value": "Go-http-client/1.1"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928663027,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "HTTP request received"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "info"
+                                },
+                                {
+                                    "key": "method",
+                                    "type": "string",
+                                    "value": "GET"
+                                },
+                                {
+                                    "key": "url",
+                                    "type": "string",
+                                    "value": "/route?dropoff=577%2C322\u0026pickup=126%2C408"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p2",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "4877e06480fdbb2b",
+                    "operationName": "HTTP GET",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "cf9099de926e9170"
+                        }
+                    ],
+                    "startTime": 1733164928548312,
+                    "duration": 61242,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.url",
+                            "type": "string",
+                            "value": "http://0.0.0.0:8083/route?dropoff=577%2C322\u0026pickup=404%2C409"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.peer.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.peer.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "3f935e77dedd21bc",
+                    "operationName": "HTTP GET",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "cf9099de926e9170"
+                        }
+                    ],
+                    "startTime": 1733164928609676,
+                    "duration": 41721,
+                    "tags": [
+                        {
+                            "key": "http.method",
+                            "type": "string",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "http.response_content_length",
+                            "type": "int64",
+                            "value": 59
+                        },
+                        {
+                            "key": "http.status_code",
+                            "type": "int64",
+                            "value": 200
+                        },
+                        {
+                            "key": "http.url",
+                            "type": "string",
+                            "value": "http://0.0.0.0:8083/route?dropoff=577%2C322\u0026pickup=980%2C901"
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "net.peer.name",
+                            "type": "string",
+                            "value": "0.0.0.0"
+                        },
+                        {
+                            "key": "net.peer.port",
+                            "type": "int64",
+                            "value": 8083
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                        },
+                        {
+                            "key": "otel.scope.version",
+                            "type": "string",
+                            "value": "0.55.0"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [],
+                    "processID": "p1",
+                    "warnings": null
+                },
+                {
+                    "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                    "spanID": "dc99ab8daf1f2273",
+                    "operationName": "GetDriver",
+                    "references": [
+                        {
+                            "refType": "CHILD_OF",
+                            "traceID": "71bdfb9f5b6404c0d1d23037d2041c60",
+                            "spanID": "e0200fb2c773045c"
+                        }
+                    ],
+                    "startTime": 1733164928491618,
+                    "duration": 34040,
+                    "tags": [
+                        {
+                            "key": "error",
+                            "type": "bool",
+                            "value": true
+                        },
+                        {
+                            "key": "internal.span.format",
+                            "type": "string",
+                            "value": "otlp"
+                        },
+                        {
+                            "key": "otel.scope.name",
+                            "type": "string",
+                            "value": "redis-manual"
+                        },
+                        {
+                            "key": "otel.status_code",
+                            "type": "string",
+                            "value": "ERROR"
+                        },
+                        {
+                            "key": "otel.status_description",
+                            "type": "string",
+                            "value": "An error occurred"
+                        },
+                        {
+                            "key": "param.driverID",
+                            "type": "string",
+                            "value": "T761327C"
+                        },
+                        {
+                            "key": "span.kind",
+                            "type": "string",
+                            "value": "client"
+                        }
+                    ],
+                    "logs": [
+                        {
+                            "timestamp": 1733164928525516,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "exception"
+                                },
+                                {
+                                    "key": "exception.message",
+                                    "type": "string",
+                                    "value": "redis timeout"
+                                },
+                                {
+                                    "key": "exception.type",
+                                    "type": "string",
+                                    "value": "*errors.errorString"
+                                }
+                            ]
+                        },
+                        {
+                            "timestamp": 1733164928525545,
+                            "fields": [
+                                {
+                                    "key": "event",
+                                    "type": "string",
+                                    "value": "redis timeout"
+                                },
+                                {
+                                    "key": "driver_id",
+                                    "type": "string",
+                                    "value": "T761327C"
+                                },
+                                {
+                                    "key": "error",
+                                    "type": "string",
+                                    "value": "redis timeout"
+                                },
+                                {
+                                    "key": "level",
+                                    "type": "string",
+                                    "value": "error"
+                                }
+                            ]
+                        }
+                    ],
+                    "processID": "p3",
+                    "warnings": null
+                }
+            ],
+            "processes": {
+                "p1": {
+                    "serviceName": "frontend",
+                    "tags": [
+                        {
+                            "key": "host.name",
+                            "type": "string",
+                            "value": "874ba54cd763"
+                        },
+                        {
+                            "key": "os.type",
+                            "type": "string",
+                            "value": "linux"
+                        },
+                        {
+                            "key": "telemetry.sdk.language",
+                            "type": "string",
+                            "value": "go"
+                        },
+                        {
+                            "key": "telemetry.sdk.name",
+                            "type": "string",
+                            "value": "opentelemetry"
+                        },
+                        {
+                            "key": "telemetry.sdk.version",
+                            "type": "string",
+                            "value": "1.30.0"
+                        }
+                    ]
+                },
+                "p2": {
+                    "serviceName": "route",
+                    "tags": [
+                        {
+                            "key": "host.name",
+                            "type": "string",
+                            "value": "874ba54cd763"
+                        },
+                        {
+                            "key": "os.type",
+                            "type": "string",
+                            "value": "linux"
+                        },
+                        {
+                            "key": "telemetry.sdk.language",
+                            "type": "string",
+                            "value": "go"
+                        },
+                        {
+                            "key": "telemetry.sdk.name",
+                            "type": "string",
+                            "value": "opentelemetry"
+                        },
+                        {
+                            "key": "telemetry.sdk.version",
+                            "type": "string",
+                            "value": "1.30.0"
+                        }
+                    ]
+                },
+                "p3": {
+                    "serviceName": "redis-manual",
+                    "tags": [
+                        {
+                            "key": "host.name",
+                            "type": "string",
+                            "value": "874ba54cd763"
+                        },
+                        {
+                            "key": "os.type",
+                            "type": "string",
+                            "value": "linux"
+                        },
+                        {
+                            "key": "telemetry.sdk.language",
+                            "type": "string",
+                            "value": "go"
+                        },
+                        {
+                            "key": "telemetry.sdk.name",
+                            "type": "string",
+                            "value": "opentelemetry"
+                        },
+                        {
+                            "key": "telemetry.sdk.version",
+                            "type": "string",
+                            "value": "1.30.0"
+                        }
+                    ]
+                },
+                "p4": {
+                    "serviceName": "driver",
+                    "tags": [
+                        {
+                            "key": "host.name",
+                            "type": "string",
+                            "value": "874ba54cd763"
+                        },
+                        {
+                            "key": "os.type",
+                            "type": "string",
+                            "value": "linux"
+                        },
+                        {
+                            "key": "telemetry.sdk.language",
+                            "type": "string",
+                            "value": "go"
+                        },
+                        {
+                            "key": "telemetry.sdk.name",
+                            "type": "string",
+                            "value": "opentelemetry"
+                        },
+                        {
+                            "key": "telemetry.sdk.version",
+                            "type": "string",
+                            "value": "1.30.0"
+                        }
+                    ]
+                },
+                "p5": {
+                    "serviceName": "mysql",
+                    "tags": [
+                        {
+                            "key": "host.name",
+                            "type": "string",
+                            "value": "874ba54cd763"
+                        },
+                        {
+                            "key": "os.type",
+                            "type": "string",
+                            "value": "linux"
+                        },
+                        {
+                            "key": "telemetry.sdk.language",
+                            "type": "string",
+                            "value": "go"
+                        },
+                        {
+                            "key": "telemetry.sdk.name",
+                            "type": "string",
+                            "value": "opentelemetry"
+                        },
+                        {
+                            "key": "telemetry.sdk.version",
+                            "type": "string",
+                            "value": "1.30.0"
+                        }
+                    ]
+                },
+                "p6": {
+                    "serviceName": "customer",
+                    "tags": [
+                        {
+                            "key": "host.name",
+                            "type": "string",
+                            "value": "874ba54cd763"
+                        },
+                        {
+                            "key": "os.type",
+                            "type": "string",
+                            "value": "linux"
+                        },
+                        {
+                            "key": "telemetry.sdk.language",
+                            "type": "string",
+                            "value": "go"
+                        },
+                        {
+                            "key": "telemetry.sdk.name",
+                            "type": "string",
+                            "value": "opentelemetry"
+                        },
+                        {
+                            "key": "telemetry.sdk.version",
+                            "type": "string",
+                            "value": "1.30.0"
+                        }
+                    ]
+                }
+            },
+            "warnings": null
+        }
+    ],
+    "total": 0,
+    "limit": 0,
+    "offset": 0,
+    "errors": null
+}
