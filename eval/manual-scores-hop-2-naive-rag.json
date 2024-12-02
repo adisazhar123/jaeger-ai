@@ -1,0 +1,106 @@
+[
+    {
+        "q": "What distinct operation names are invoked by /dispatch?",
+        "r": "Two distinct operation names are invoked by /dispatch: \"/dispatch\" and \"/route\"."
+    },
+    {
+        "q": "What is the customer ID?",
+        "r": "731"
+    },
+    {
+        "q": "What distinct service names are affected by the Redis error?",
+        "r": "redis-manual"
+    },
+    {
+        "q": "What is the SQL operation performed by mysql?",
+        "r": "SQL SELECT"
+    },
+    {
+        "q": "What service invokes redis-manual service?",
+        "r": "redis-manual"
+    },
+    {
+        "q": "Where is the location to find the driver?",
+        "r": "Location: 728,326"
+    },
+    {
+        "q": "Why was there an error while finding a driver?",
+        "r": "There was an error while finding a driver due to a Redis timeout error."
+    },
+    {
+        "q": "Why did /dispatch API succeed despite a timeout in Redis?",
+        "r": "The /dispatch API succeeded despite a timeout in Redis because the necessary data was retrieved from the customer and the nearest drivers were found, allowing for a successful dispatch with driver T720712C."
+    },
+    {
+        "q": "How many APIs do /dispatch invoke?",
+        "r": "2"
+    },
+    {
+        "q": "How many errors occurred?",
+        "r": "1"
+    },
+    {
+        "q": "How many drivers were found?",
+        "r": "10"
+    },
+    {
+        "q": "How many times did driver service invoke redis-manual?",
+        "r": "2"
+    },
+    {
+        "q": "How many times to retry Redis?",
+        "r": "Insufficient Information"
+    },
+    {
+        "q": "True or False. There are 2 instances of Redis errors.",
+        "r": "True"
+    },
+    {
+        "q": "True or False. There are 6 Redis errors.",
+        "r": "False"
+    },
+    {
+        "q": "True or False. The Redis error is caused by a timeout.",
+        "r": "True"
+    },
+    {
+        "q": "True or False. Driver ID T7991012 is found as a nearby driver.",
+        "r": "False"
+    },
+    {
+        "q": "True or False. Mysql service is called by customer service.",
+        "r": "False"
+    },
+    {
+        "q": "True or False. Mysql service is invoked by frontend.",
+        "r": "False"
+    },
+    {
+        "q": "True or False. Redis service calls driver service.",
+        "r": "False"
+    },
+    {
+        "q": "True or False. /route operation calls Redis service.",
+        "r": "True"
+    },
+    {
+        "q": "True or False. There are outgoing calls from Mysql service.",
+        "r": "True"
+    },
+    {
+        "q": "True or False. Frontend invokes customer service and route service.",
+        "r": "True"
+    },
+    {
+        "q": "True or False. Redis failed because of low disk space.",
+        "r": "False."
+    },
+    {
+        "q": "True or False. A write operation was performed by Mysql.",
+        "r": "False"
+    },
+    {
+        "q": "True or False. There is an indirect API call between frontend and redis.",
+        "r": "True"
+    }
+]
