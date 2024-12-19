@@ -101,9 +101,10 @@ export class SearchTracePageImpl extends Component {
     const showLogo = isHomepage && !hasTraceResults && !loadingTraces && !errors;
     const tabItems = [];
     if (!loadingServices && services) {
+      tabItems.push({ label: 'JaegerAI Search', key: 'searchGenAIForm', children: <SearchForm genAI={true} /> });
       tabItems.push({ label: 'Search', key: 'searchForm', children: <SearchForm services={services} /> });
-      tabItems.push({ label: 'Search powered by GenAI', key: 'searchGenAIForm', children: <SearchForm genAI={true} /> });
     } else {
+      tabItems.push({ label: 'JaegerAI Search', key: 'searchGenAIForm', children: <SearchForm genAI={true} /> });
       tabItems.push({ label: 'Search', key: 'searchForm', children: <LoadingIndicator /> });
     }
     if (!disableFileUploadControl) {

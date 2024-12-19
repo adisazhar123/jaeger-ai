@@ -293,7 +293,7 @@ export class SearchFormImpl extends React.PureComponent {
           console.log('hello', this.state.query)
           submitForm({ query: this.state.query }, this.props.searchTraceByQuery, true);
         }}>
-          <label htmlFor='query'>Query</label>
+          <label htmlFor='query'>Query</label> <br/>
           <input type='text' name='query' placeholder={'What are you looking for?'} onChange={(e) => this.setState({ query: e.target.value })} />
           <button type={'submit'}>Search</button>
         </form>
