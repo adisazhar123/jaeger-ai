@@ -2,7 +2,7 @@
 
 
 
-We employ a novel Graph Retrieval Augmented Generation (RAG) technique that summarize microservice logs  and retain hierarchical relationship of API invocations. We developed a custom storage  plugin that runs alongside Jaeger. Our method is able to achieve insert performance outperforming naive RAG by insert performance.
+We employ a novel Graph Retrieval Augmented Generation (RAG) technique that summarize microservice logs  and retain hierarchical relationship of API invocations. We developed a custom storage  plugin that runs alongside Jaeger. Our Graph RAG method  achieves the highest performance at 69.33%, showing an increase of 38.66% after additional hops tuning. It outperforms Naive RAG by a whopping 61.90%.
 
 
 ### Modules
