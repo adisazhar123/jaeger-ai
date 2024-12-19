@@ -39,5 +39,5 @@ SPAN_STORAGE_TYPE=grpc ./jaeger-1.62.0-linux-amd64/jaeger-collector --grpc-stora
 & OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318 ./jaeger-1.62.0-linux-amd64/example-hotrod all
 ```
 
-5. Run `npm start` in `jaeger-ui`.
+5. Run `npm ci` and `npm start` in `jaeger-ui`.
 6. Browse to http://localhost:5173 to open Jaeger UI dashboard.
