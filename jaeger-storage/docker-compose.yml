@@ -48,6 +48,7 @@ services:
       dockerfile: DockerfileGo
     ports:
       - '54321:54321'
+      - '54320:54320'
     depends_on:
       postgres:
         condition: service_healthy
