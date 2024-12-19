@@ -186,7 +186,7 @@ export function TracePageHeaderFn(props: TracePageHeaderEmbedProps & { forwarded
     setLoading(true);
 
     const response = await fetch("http://localhost:54320/api/ask", {
-      body: JSON.stringify({ question, hop: Number(hop) , trace_id: trace.traceID }),
+      body: JSON.stringify({ question, hop: Number(hop) , trace_id: trace.traceID, method: 'graph-rag' }),
       method: 'POST',
     });
 

@@ -66,14 +66,32 @@ func (w *Neo4jWriter) summarizeAndCreateEmbeddings(ctx context.Context, span *mo
 	logSummary = strings.ReplaceAll(logSummary, "#EMPTY#", "")
 
 	if err != nil {
-		log.Println("[neo4j][insertLogs][error] an error occurred summarizing the logs", logsRaw, err)
+		log.Println("[neo4j][summarizeAndCreateEmbeddings][error] an error occurred summarizing the logs", logsRaw, err)
 		return err
 	}
 	logSummary = strings.ReplaceAll(logSummary, "<summary>", "")
 	logSummary = strings.ReplaceAll(logSummary, "</summary>", "")
 	logSummary = strings.TrimSpace(logSummary)
 
-	embedding, err := w.openaiClient.CreateEmbeddings(ctx, spanSummary+logSummary)
+	var tagsRaw string
+	for i := 0; i < len(span.Tags); i++ {
+		t := span.Tags[i]
+		tagsRaw += fmt.Sprintf("%s: %s\n", t.Key, t.Value())
+	}
+
+	//tagsSummary, err := w.openaiClient.SummarizeLog(ctx, tagsRaw)
+	//tagsSummary = strings.TrimSpace(tagsSummary)
+	//tagsSummary = strings.ReplaceAll(tagsSummary, "#EMPTY#", "")
+	//
+	//if err != nil {
+	//	log.Println("[neo4j][summarizeAndCreateEmbeddings][error] an error occurred summarizing the tagsRaw", logsRaw, err)
+	//	return err
+	//}
+	//tagsSummary = strings.ReplaceAll(tagsSummary, "<summary>", "")
+	//tagsSummary = strings.ReplaceAll(tagsSummary, "</summary>", "")
+	//tagsSummary = strings.TrimSpace(tagsSummary)
+
+	embedding, err := w.openaiClient.CreateEmbeddings(ctx, spanSummary+logSummary+tagsRaw)
 	if err != nil {
 		log.Println("[neo4j][summarizeAndCreateEmbeddings] an error occurred while creating the embeddings", err)
 		return err
@@ -91,9 +109,9 @@ func (w *Neo4jWriter) summarizeAndCreateEmbeddings(ctx context.Context, span *mo
 		"span_id":      span.SpanID.String(),
 		"span_summary": spanSummary,
 		"log_summary":  logSummary,
-		"tag_summary":  "TODO: empty for now",
+		"tag_summary":  tagsRaw,
 		"embedding":    embedding,
-		"summary":      spanSummary + logSummary,
+		"summary":      spanSummary + logSummary + tagsRaw,
 		//"log_embedding": logEmbedding,
 	}, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
 
@@ -132,7 +150,7 @@ func (w *Neo4jWriter) upsertServiceTraceSpan(ctx context.Context, span *model.Sp
 				tag_summary: $tag_summary,
 				span_kind: $span_kind,
 				action_kind: $action_kind,
-				action_status_code: $action_status_code
+				span_status: $span_status
 			})
 			MERGE (service)-[r_contain:CONTAINS]->(span)
 			MERGE (trace)-[r_contain_span:CONTAINS]->(span)
@@ -141,6 +159,16 @@ func (w *Neo4jWriter) upsertServiceTraceSpan(ctx context.Context, span *model.Sp
 	spanKind, _ := span.GetSpanKind()
 	// todo: change check tags???
 	actionKind := "http"
+	spanStatus := "OK"
+
+	for _, v := range span.GetTags() {
+		if v.Key == "otel.status_code" {
+			if v.VStr == "ERROR" {
+				spanStatus = "ERROR"
+				break
+			}
+		}
+	}
 
 	param := map[string]any{
 		"service_name":   span.Process.GetServiceName(),
@@ -150,13 +178,12 @@ func (w *Neo4jWriter) upsertServiceTraceSpan(ctx context.Context, span *model.Sp
 		"start_time":     span.StartTime,
 		"log_summary":    "TODO: empty-for-now",
 		"tag_summary":    "TODO: empty-for-now",
-		//"trace_summary":  "TODO: empty-for-now",
-		"span_summary": "TODO: empty-for-now",
-		"span_kind":    spanKind.String(),
+		"span_summary":   "TODO: empty-for-now",
+		"span_kind":      spanKind.String(),
 		// TODO: lookup from tags/logs
-		"action_kind":        actionKind,
-		"action_status_code": "TODO: empty for now",
-		"trace_id":           span.TraceID.String(),
+		"action_kind": actionKind,
+		"span_status": spanStatus,
+		"trace_id":    span.TraceID.String(),
 	}
 	_, err := neo4j.ExecuteQuery(ctx, *w.driver, neo4jQuery, param, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
 	if err != nil {

@@ -19,6 +19,7 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -285,14 +286,26 @@ func NewRouter(openaiClient *clients.OpenAIClient, neo4jDriver *neo4j.DriverWith
 			TraceId  string `json:"trace_id"`
 			Question string `json:"question"`
 			Hop      int    `json:"hop"`
+			Method   string `json:"method"`
 		}
-		// get trace_id (optional)
+
 		req := askRequest{}
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 			return
 		}
-		// if trace_id exists, filter span by trace_id
+
+		if req.TraceId == "" || req.Question == "" || req.Method == "" {
+			c.AbortWithStatusJSON(http.StatusBadRequest, "expects trace_id, question, method")
+			return
+		}
+
+		if req.Method == "naive-rag" && req.Hop <= 0 {
+			c.AbortWithStatusJSON(http.StatusBadRequest, "expects hop > 0")
+			return
+		}
+
+		// filter span by trace_id
 		// perform vector search, from that starting node, aggregate k hops
 		ctx := context.Background()
 		embedding, err := openaiClient.CreateEmbeddings(ctx, req.Question)
@@ -302,7 +315,8 @@ func NewRouter(openaiClient *clients.OpenAIClient, neo4jDriver *neo4j.DriverWith
 			return
 		}
 
-		query := `
+		if req.Method == "graph-rag" {
+			query := `
 			MATCH (s: Span)<-[r:CONTAINS]-(t: Trace {trace_id: $traceId})
 			WITH s, vector.similarity.cosine(s.embedding, $embedding) AS score
 			RETURN s.span_id as span_id, score
@@ -310,89 +324,136 @@ func NewRouter(openaiClient *clients.OpenAIClient, neo4jDriver *neo4j.DriverWith
 			LIMIT 1
 		`
 
-		param := map[string]any{
-			"embedding": embedding,
-			"traceId":   req.TraceId,
-		}
-
-		res, err := neo4j.ExecuteQuery(ctx, *neo4jDriver, query, param, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
-		if err != nil {
-			log.Println("[search][ExecuteQuery] error occurred", err)
-			c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		spanId, _, err := neo4j.GetRecordValue[string](res.Records[0], "span_id")
-		log.Println(spanId)
-		if err != nil {
-			log.Println("[search][GetRecordValue] error occurred", err)
-			c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		// TODO: find starting node, replace with span_id param
-		query2 := fmt.Sprintf("MATCH p=(s:Span{span_id: $span_id})-[r:INVOKES_CHILD|INVOKES_FOLLOWS*%d]-(s2:Span) return p", req.Hop)
-		param = map[string]any{
-			"span_id": spanId,
-		}
-		res, err = neo4j.ExecuteQuery(ctx, *neo4jDriver, query2, param, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
-		if err != nil {
-			log.Println("[search][ExecuteQuery] error occurred", err)
-			c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
-			return
-		}
-		visited := make(map[string]struct{})
-		//
-		//var passage string
-		var nodes = "Nodes\n"
-		var edges = "Edges\n"
-
-		// TODO: build the passage from the paths
-		for _, record := range res.Records {
-			path, _, _ := neo4j.GetRecordValue[neo4j.Path](record, "p")
-			var relationship string
-			for _, rel := range path.Relationships {
-				startNode := findNode(rel.StartElementId, path.Nodes)
-				endNode := findNode(rel.EndElementId, path.Nodes)
-
-				startSpanId, _ := neo4j.GetProperty[string](startNode, "span_id")
-				endSpanId, _ := neo4j.GetProperty[string](endNode, "span_id")
-				relationship += fmt.Sprintf("(%s, %s, %s)\n", startSpanId, rel.Type, endSpanId)
+			param := map[string]any{
+				"embedding": embedding,
+				"traceId":   req.TraceId,
 			}
-			edges += relationship
 
-			var localNode string
-			for _, node := range path.Nodes {
-				if _, ok := visited[node.ElementId]; !ok {
-					visited[node.ElementId] = struct{}{}
-					sId, _ := neo4j.GetProperty[string](node, "span_id")
-					summary, _ := neo4j.GetProperty[string](node, "summary")
-					localNode += fmt.Sprintf("Span ID: %s\nSummary: %s\n", sId, summary)
+			res, err := neo4j.ExecuteQuery(ctx, *neo4jDriver, query, param, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+			if err != nil {
+				log.Println("[search][ExecuteQuery] error occurred", err)
+				c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+				return
+			}
+
+			spanId, _, err := neo4j.GetRecordValue[string](res.Records[0], "span_id")
+			log.Println(spanId)
+			if err != nil {
+				log.Println("[search][GetRecordValue] error occurred", err)
+				c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+				return
+			}
+
+			// TODO: find starting node, replace with span_id param
+			query2 := fmt.Sprintf("MATCH p=(s:Span{span_id: $span_id})-[r:INVOKES_CHILD|INVOKES_FOLLOWS*%d]-(s2:Span) return p", req.Hop)
+			param = map[string]any{
+				"span_id": spanId,
+			}
+			res, err = neo4j.ExecuteQuery(ctx, *neo4jDriver, query2, param, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+			if err != nil {
+				log.Println("[search][ExecuteQuery] error occurred", err)
+				c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+				return
+			}
+			visited := make(map[string]struct{})
+
+			var nodes = "Nodes\n"
+			var edges = "Edges\n"
+
+			// TODO: build the passage from the paths
+			for _, record := range res.Records {
+				path, _, _ := neo4j.GetRecordValue[neo4j.Path](record, "p")
+				var relationship string
+				for _, rel := range path.Relationships {
+					startNode := findNode(rel.StartElementId, path.Nodes)
+					endNode := findNode(rel.EndElementId, path.Nodes)
+
+					startSpanId, _ := neo4j.GetProperty[string](startNode, "span_id")
+					endSpanId, _ := neo4j.GetProperty[string](endNode, "span_id")
+					relationship += fmt.Sprintf("(%s, %s, %s)\n", startSpanId, rel.Type, endSpanId)
 				}
+				edges += relationship
+
+				var localNode string
+				for _, node := range path.Nodes {
+					if _, ok := visited[node.ElementId]; !ok {
+						visited[node.ElementId] = struct{}{}
+						sId, _ := neo4j.GetProperty[string](node, "span_id")
+						summary, _ := neo4j.GetProperty[string](node, "summary")
+						localNode += fmt.Sprintf("Span ID: %s\nSummary: %s\n", sId, summary)
+					}
+				}
+				nodes += localNode
 			}
-			nodes += localNode
-		}
-		passage := edges + "\n" + nodes
-		answer, err := openaiClient.GenerateAnswer(ctx, req.Question, passage)
+			passage := edges + "\n" + nodes
+			answer, err := openaiClient.GenerateAnswer(ctx, req.Question, passage, req.Method)
 
-		if err != nil {
-			log.Println("an error occurred while generating an answer", err)
-			c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+			if err != nil {
+				log.Println("an error occurred while generating an answer", err)
+				c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+				return
+			}
+
+			answer = strings.ReplaceAll(answer, "<answer>", "")
+			answer = strings.ReplaceAll(answer, "</answer>", "")
+			answer = strings.TrimSpace(answer)
+
+			c.JSON(http.StatusOK, struct {
+				Answer  string `json:"answer"`
+				Passage string `json:"passage"`
+			}{
+				Answer:  answer,
+				Passage: passage,
+			})
 			return
+		} else if req.Method == "naive-rag" {
+			query := `
+			MATCH (s: Span)<-[r:CONTAINS]-(t: Trace {trace_id: $traceId})
+			WITH s, vector.similarity.cosine(s.embedding, $embedding) AS score
+			RETURN s.summary as summary, score
+			ORDER BY score DESC
+			LIMIT $k
+		`
+
+			param := map[string]any{
+				"embedding": embedding,
+				"traceId":   req.TraceId,
+				"k":         req.Hop,
+			}
+
+			res, err := neo4j.ExecuteQuery(ctx, *neo4jDriver, query, param, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+			if err != nil {
+				log.Println("[search][ExecuteQuery] error occurred", err)
+				c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+				return
+			}
+			var passage string
+			for _, record := range res.Records {
+				s, _ := record.Get("summary")
+				summary := s.(string)
+				passage += summary + "\n"
+			}
+
+			answer, err := openaiClient.GenerateAnswer(ctx, req.Question, passage, req.Method)
+
+			if err != nil {
+				log.Println("an error occurred while generating an answer", err)
+				c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+				return
+			}
+
+			answer = strings.ReplaceAll(answer, "<answer>", "")
+			answer = strings.ReplaceAll(answer, "</answer>", "")
+			answer = strings.TrimSpace(answer)
+
+			c.JSON(http.StatusOK, struct {
+				Answer  string `json:"answer"`
+				Passage string `json:"passage"`
+			}{
+				Answer:  answer,
+				Passage: passage,
+			})
 		}
-
-		c.JSON(http.StatusOK, struct {
-			Answer  string `json:"answer"`
-			Passage string `json:"passage"`
-		}{
-			Answer:  answer,
-			Passage: passage,
-		})
-
-		//c.String(http.StatusOK, fmt.Sprintf("answer: %s\npassage: %s", answer, passage))
-		return
-		// else if trace_id does not exist
-		// perform vector search, from that starting node, aggregate k hops
 	})
 
 	return r

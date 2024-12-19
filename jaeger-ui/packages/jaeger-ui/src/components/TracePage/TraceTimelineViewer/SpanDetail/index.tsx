@@ -63,6 +63,11 @@ export default function SpanDetail(props: SpanDetailProps) {
     span;
   const overviewItems = [
     {
+      key: 'id',
+      label: 'ID:',
+      value: spanID,
+    },
+    {
       key: 'svc',
       label: 'Service:',
       value: process.serviceName,

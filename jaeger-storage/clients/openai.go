@@ -34,7 +34,7 @@ func (c *OpenAIClient) SummarizeSpan(ctx context.Context, passage string) (strin
 		action kind: http
 		</raw-span>
 		<summary>
-		The operation to create a new user in member service succeeded. It is associated with registering new customers when they sign up via the web application. It is a HTTP request that lasted 100 nano seconds. It had a span ID of 001.
+		The operation "user-registration" to create a new user in member-service succeeded. It is associated with registering new customers when they sign up via the web application. It is a HTTP request that lasted 100 nano seconds. Its span ID is 001.
 		</summary>
 `
 	p := fmt.Sprintf(`
@@ -147,21 +147,22 @@ func (c *OpenAIClient) CreateEmbeddings(ctx context.Context, content string) ([]
 	return res.Data[0].Embedding, nil
 }
 
-func (c *OpenAIClient) GenerateAnswer(ctx context.Context, query string, passage string) (string, error) {
+func (c *OpenAIClient) GenerateAnswer(ctx context.Context, query string, passage string, method string) (string, error) {
 	prompt := `
-		You need to provide a factual answer based on the given question and passage. Use the passage to answer the question. 
-		If there is not enough information in the passage, say "There is not enough information to give an answer." Be confident to say there is no answer.
-		Here are some examples to show you.
-		
-		Example 1
-		
-		You are given a question and passage.
+		You need to provide a factual answer based on the given question and passage. Use the passage to answer the question.
+		If you believe the question cannot be answered from the given passage return the phrase "Insufficient Information". Keep the answer concise and specific. Do not include redundant information.
+
+		Here are some examples to show you. The passage is delimited by <passage></passage>, question is delimited by <question></question>, and answer is delimited by <answer></answer>. You are also given <explanation></explanation> to help you reason how to arrive at an answer. Do not include <explanation></explanation> in your response.
+
+		The passage is a graph structure of a distributed tracing application.
+		The nodes are spans. Each span has an ID and summary.
+		The edges are of the format (span_id, relationship, span_id). This indicates that there is a directed relationship between spans.
+		It is important that you use the (span_id, relationship, span_id) format to help you reason about the answer. 
+		Do not include the edge format in your answer unless asked to.
 				
-		Passage:
-		
-		This is a graph structure of a distributed tracing application.
-		The nodes are spans. Each span has an ID and summary.
-		The edges are of the format (span_id, relationship, span_id). This indicates that there is a directed relationship between spans.
+		<passage>	
+		Edge types:
+		INVOKES_CHILD means that a span calls or invokes another span 
 		
 		Edges:
 		(01, INVOKES_CHILD, 02)
@@ -170,59 +171,84 @@ func (c *OpenAIClient) GenerateAnswer(ctx context.Context, query string, passage
 		
 		Nodes:
 		Span ID: 01
+		Operation: initiate-transfer
 		Summary: User Joe initiated a money transfer to Bob.
 		
 		Span ID: 02
+		Operation: wallet-processor
 		Summary: Wallet service received request for a money transfer. It cannot do the transfer for unknown reasons.
 		
 		Span ID: 03
+		Operation: convert-currency
 		Summary: Currency service cannot convert to the destination currency. It failed because exchange market is closed today.
 		
 		Span ID: 04
+		Operation: get-customer
 		Summary: Returning customer information. Joe is a gold tier member.
+		</passage>
 		
-		Question: Why did the money transfer failed?
-		Answer: An error occurred in currency service, span ID 03, because the exchange market is closed. This caused upstream services to failed.
+		<question>
+		Why did the money transfer failed?
+		</question>
+		<explanation>
+		The passage says that "It failed because exchange market is closed today.". 
+		</<explanation>
+		<answer>
+		An error occurred in currency service because the exchange market is closed.
+		</answer>	
 
+		<question> 
+		Why did the database connection shutdown?
+		</question>
+		<explanation>
+		Database connection shutdown is not mentioned anywhere in the passage.
+		</explanation>
+		<answer>
+		Insufficient Information
+		</answer>
 
-		Example 2
-		
-		You are given a question and passage.
-		
-		Passage:
-		
-		This is a graph structure of a distributed tracing application.
-		The nodes are spans. Each span has an ID and summary.
-		The edges are of the format (span_id, relationship, span_id). This indicates that there is a directed relationship between spans.
-		
-		Edges:
-		(01, INVOKES_CHILD, 02)
-		(02, INVOKES_CHILD, 03)
-		(01, INVOKES_CHILD, 04)
-		
-		Nodes:
-		Span ID: 01
-		Summary: User Joe initiated a money transfer to Bob.
-		
-		Span ID: 02
-		Summary: Wallet service received request for a money transfer. It cannot do the transfer for unknown reasons.
-		
-		Span ID: 03
-		Summary: Currency service cannot convert to the destination currency. It failed because exchange market is closed today.
-		
-		Span ID: 04
-		Summary: Returning customer information. Joe is a gold tier member.
+		<question> 
+		Which span did the market closure occurred in?
+		</question>
+		<explanation>
+		The passage mentions "Span ID: 03" where "It failed because exchange market is closed today.".
+		</explanation>
+		<answer>
+		Span ID 03
+		</answer>
 
-		Question: Why did the database connection shutdown?
-		Answer:  There is not enough information to give an answer. The passage does not mention anything about database failures.
+		<question>
+		What is the operation name invoked by operation initiate-transfer? 
+		</question>
+		<explanation>
+		operation "initiate-transfer" is in Span ID: 01 which invokes Span ID: 02 which is wallet-processor and Span ID: 04 which is get-customer.
+		</explanation>
+		<answer>
+		wallet-processor and get-customer.
+		</answer>
 	`
+
+	if method == "naive-rag" {
+		prompt = `
+		You need to provide a factual answer based on the given question and passage. Use the passage to answer the question.
+		If you believe the question cannot be answered from the given passage return the phrase "Insufficient Information". Keep the answer concise and specific. Do not include redundant information.
+	`
+	}
+
 	user := fmt.Sprintf(`
-		Question: %s	
-		Passage: %s
+		Keep the answer short, brief, and specific. If asked for a count return the number. Do not include redundant information.
+
+		<question> 
+		%s 
+		</question>	
+		<passage> 
+		%s 
+		</passage>
 	`, query, passage)
 
 	res, err := c.client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 		Model: openai.GPT4oMini20240718,
+		//Model: openai.GPT4Turbo,
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role:    openai.ChatMessageRoleSystem,
